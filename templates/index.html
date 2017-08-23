@@ -4,8 +4,11 @@
 <head>
   <!-- Standard Meta -->
   <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdn.rawgit.com/twbs/bootstrap/48938155eb24b4ccdde09426066869504c6dab3c/dist/css/bootstrap.min.css">
 
     <style type="text/css">
       body {
@@ -55,13 +58,6 @@
       <p>Welcome to Go!</p>
 
       <div id="reactEntry"></div>
-
-      <img class="wireframe" src="{{ url_for('static', filename='paragraph.png') }}">
-      <img class="wireframe" src="{{ url_for('static', filename='paragraph.png') }}">
-      <img class="wireframe" src="{{ url_for('static', filename='paragraph.png') }}">
-      <img class="wireframe" src="{{ url_for('static', filename='paragraph.png') }}">
-      <img class="wireframe" src="{{ url_for('static', filename='paragraph.png') }}">
-      <img class="wireframe" src="{{ url_for('static', filename='paragraph.png') }}">
       <img class="wireframe" src="{{ url_for('static', filename='paragraph.png') }}">
     </div>
 

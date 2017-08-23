@@ -1,7 +1,7 @@
 var webpack = require('webpack');
 module.exports = {
   entry: [
-    "./js/app.js"
+    "./src/index.js"
   ],
   output: {
     path: __dirname + '/static',
@@ -13,7 +13,7 @@ module.exports = {
         test: /\.js?$/,
         loader: 'babel-loader',
         query: {
-          presets: ['es2015', 'react']
+          presets: ['es2015', 'react', 'stage-1']
         },
         exclude: /node_modules/
       },
