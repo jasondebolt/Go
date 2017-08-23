@@ -109,7 +109,7 @@
 	    return _react2.default.createElement(
 	      'h1',
 	      null,
-	      'Hello, Yoon'
+	      'Go is here, yay'
 	    );
 	  }
 	});

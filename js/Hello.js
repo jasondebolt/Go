@@ -2,7 +2,7 @@ import React from 'react';
 
 var Hello = React.createClass({
   render() {
-    return <h1>Hello, Yoon</h1>;
+    return <h1>Go is here, yay</h1>;
   }
 });
 
