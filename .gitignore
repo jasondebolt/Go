@@ -7,8 +7,8 @@ __pycache__/
 C extensions
 *.so
 
-# Veganolia
-veganolia_config.json
+# Go
+go_config.json
 
 # Distribution / packaging
 .Python

@@ -12,7 +12,10 @@
         background-color: #FFFFFF;
       }
 
-      .ui.menu .item img.logo {
+      img.logo {
+      }
+
+      .ui.menu .item {
         margin-right: 1.5em;
       }
 
@@ -36,13 +39,13 @@
     <div class="ui fixed inverted menu">
       <div class="ui container">
         <a href="#" class="header item">
-            <img class="logo" src="{{ url_for('static', filename='logo.png') }}">
-            &nbsp; &nbsp; Go
-          </a>
-        <a href="/" class="item">Home</a>
-        <a href="/about" class="item">About</a>
-        <a href="/recipes" class="item">Recipes</a>
-        <a href="/social" class="item">Social</a>
+          <img class="logo ui image" src="{{ url_for('static', filename='logo.png') }}">
+        </a>
+        <a href="#" class="header item">Go</a>
+        <a href="/" class="header item">Home</a>
+        <a href="/about" class="header item">About</a>
+        <a href="/recipes" class="header item">Recipes</a>
+        <a href="/social" class="header item">Social</a>
       </div>
     </div>
     <p />
@@ -65,42 +68,30 @@
       <div class="ui center aligned container">
         <div class="ui stackable inverted divided grid">
           <div class="three wide column">
-            <h4 class="ui inverted header">Group 1</h4>
+            <h4 class="ui inverted header">Community</h4>
             <div class="ui inverted link list">
-              <a href="#" class="item">Link One</a>
-              <a href="#" class="item">Link Two</a>
-              <a href="#" class="item">Link Three</a>
-              <a href="#" class="item">Link Four</a>
+              <a href="#" class="item">Submit an issue</a>
+              <a href="#" class="item">Suggest an idea</a>
+              <a href="#" class="item">Join the email list</a>
             </div>
           </div>
           <div class="three wide column">
-            <h4 class="ui inverted header">Group 2</h4>
+            <h4 class="ui inverted header">Code</h4>
             <div class="ui inverted link list">
-              <a href="#" class="item">Link One</a>
-              <a href="#" class="item">Link Two</a>
-              <a href="#" class="item">Link Three</a>
-              <a href="#" class="item">Link Four</a>
-            </div>
-          </div>
-          <div class="three wide column">
-            <h4 class="ui inverted header">Group 3</h4>
-            <div class="ui inverted link list">
-              <a href="#" class="item">Link One</a>
-              <a href="#" class="item">Link Two</a>
-              <a href="#" class="item">Link Three</a>
-              <a href="#" class="item">Link Four</a>
+              <a href="#" class="item">Github Repo</a>
+              <a href="#" class="item">Docs</a>
             </div>
           </div>
           <div class="seven wide column">
-            <h4 class="ui inverted header">Footer Header</h4>
-            <p>Extra space for a call to action inside the footer that could help re-engage users.</p>
+            <h4 class="ui inverted header">Contribute as a developer!</h4>
+            <p>Help make Go even more awesome!</p>
+            <p>Learn serverless programming!</p>
+            <p><button class="positive ui button">Click here to get started</button></p>
           </div>
         </div>
         <div class="ui inverted section divider"></div>
         <img src="{{ url_for('static', filename='logo.png') }}" class="ui centered mini image">
         <div class="ui horizontal inverted small divided link list">
-          <a class="item" href="#">Site Map</a>
-          <a class="item" href="#">Contact Us</a>
           <a class="item" href="#">Terms and Conditions</a>
           <a class="item" href="#">Privacy Policy</a>
         </div>
