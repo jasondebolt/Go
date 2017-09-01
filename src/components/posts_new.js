@@ -13,7 +13,7 @@ class PostsNew extends Component {
     //console.log(field.foo)
     // const { meta } = field; // --> destructuring is cool, but keep it simple for now.
     // const { meta : { touched, error }} = field; // --> Even cooler!!
-    const className = `form-group ${field.meta.touched && field.meta.error ? 'has-danger': ''}`;
+    const className = `field ${field.meta.touched && field.meta.error ? 'ui red message': ''}`;
     return (
       <div className={className}> {
         /* field.input is an object which contains a bunch
@@ -30,7 +30,6 @@ class PostsNew extends Component {
       */}
         <label>{field.label}</label>
         <input
-          className="form-control"
           type="text"
           {...field.input}
         />
@@ -56,7 +55,7 @@ class PostsNew extends Component {
     // Pull on the handleSubmit function that we get from reduxForm.
     const { handleSubmit } = this.props;
     return (
-      <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
+      <form className="ui form" onSubmit={handleSubmit(this.onSubmit.bind(this))}>
         {/*
           You can pass arbitrary values to the Field object and they will
           be accessible in the component as an attribute of the 'field' object
@@ -81,11 +80,11 @@ class PostsNew extends Component {
           name="content"
           component={this.renderField}
         />
-        <button type="submit" className="btn btn-primary">Submit</button>
+        <button type="submit" className="ui green button">Submit</button>
         {/*
           Link tags actually do show up as anchor tags (see style.css file)
         */}
-        <Link to="/" className="btn btn-danger">Cancel</Link>
+        <Link to="/" className="ui blue button">Cancel</Link>
       </form>
     )
   }

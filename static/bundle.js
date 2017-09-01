@@ -55250,7 +55250,7 @@
 	      //console.log(field.foo)
 	      // const { meta } = field; // --> destructuring is cool, but keep it simple for now.
 	      // const { meta : { touched, error }} = field; // --> Even cooler!!
-	      var className = 'form-group ' + (field.meta.touched && field.meta.error ? 'has-danger' : '');
+	      var className = 'field ' + (field.meta.touched && field.meta.error ? 'ui red message' : '');
 	      return _react2.default.createElement(
 	        'div',
 	        { className: className },
@@ -55261,7 +55261,6 @@
 	          field.label
 	        ),
 	        _react2.default.createElement('input', _extends({
-	          className: 'form-control',
 	          type: 'text'
 	        }, field.input)),
 	        field.meta.touched ? field.meta.error : ''
@@ -55287,7 +55286,7 @@
 
 	      return _react2.default.createElement(
 	        'form',
-	        { onSubmit: handleSubmit(this.onSubmit.bind(this)) },
+	        { className: 'ui form', onSubmit: handleSubmit(this.onSubmit.bind(this)) },
 	        _react2.default.createElement(_reduxForm.Field, {
 	          foo: 'FOO TITLE',
 	          label: 'Title',
@@ -55308,12 +55307,12 @@
 	        }),
 	        _react2.default.createElement(
 	          'button',
-	          { type: 'submit', className: 'btn btn-primary' },
+	          { type: 'submit', className: 'ui green button' },
 	          'Submit'
 	        ),
 	        _react2.default.createElement(
 	          _reactRouterDom.Link,
-	          { to: '/', className: 'btn btn-danger' },
+	          { to: '/', className: 'ui blue button' },
 	          'Cancel'
 	        )
 	      );
@@ -55463,7 +55462,7 @@
 	        _react2.default.createElement(
 	          'button',
 	          {
-	            className: 'btn btn-danger pull-xs-right',
+	            className: 'ui red button right floated column',
 	            onClick: this.onDeleteClick.bind(this)
 	          },
 	          'Delete Post'
