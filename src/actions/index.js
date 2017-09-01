@@ -6,7 +6,7 @@ export const DELETE_POST = 'delete_post';
 
 const ROOT_URL = 'http://reduxblog.herokuapp.com/api'
 // Use Postman to manually create some posts.
-const API_KEY = '?key=JASON481847771451' // Choose any random key.
+const API_KEY = '?key=JASON9999' // Choose any random key.
 
 export function fetchPosts() {
   const request = axios.get(`${ROOT_URL}/posts${API_KEY}`)

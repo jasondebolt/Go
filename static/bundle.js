@@ -41145,7 +41145,7 @@
 
 	var ROOT_URL = 'http://reduxblog.herokuapp.com/api';
 	// Use Postman to manually create some posts.
-	var API_KEY = '?key=JASON481847771451'; // Choose any random key.
+	var API_KEY = '?key=JASON9999'; // Choose any random key.
 
 	function fetchPosts() {
 	  var request = _axios2.default.get(ROOT_URL + '/posts' + API_KEY);
@@ -55162,7 +55162,7 @@
 	              { className: 'ui grid' },
 	              _react2.default.createElement(
 	                'div',
-	                { className: 'twelve wide column centered' },
+	                { className: 'ten wide column centered' },
 	                _react2.default.createElement(
 	                  'h4',
 	                  null,
@@ -55281,7 +55281,9 @@
 	      //console.log(this.props);
 	      // this.props.history.push('/'); --> May return us to main page before post is created. Not ideal.
 	      this.props.createPost(values, function () {
-	        _this2.props.history.push('/');
+	        _this2.props.reset();
+	        _this2.props.fetchPosts();
+	        //this.props.history.push('/');
 	      });
 	    }
 	  }, {
@@ -55366,7 +55368,7 @@
 	exports.default = (0, _reduxForm.reduxForm)({
 	  validate: validate,
 	  form: 'PostsNewForm'
-	})((0, _reactRedux.connect)(null, { createPost: _actions.createPost })(PostsNew));
+	})((0, _reactRedux.connect)(null, { createPost: _actions.createPost, fetchPosts: _actions.fetchPosts })(PostsNew));
 
 /***/ }),
 /* 553 */

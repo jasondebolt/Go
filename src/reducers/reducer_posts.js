@@ -10,7 +10,7 @@ then require('./some-library') would attempt to load:
 ./some-library/index.js
 ./some-library/index.node
 */
-import { FETCH_POSTS, FETCH_POST, DELETE_POST } from '../actions';
+import {FETCH_POSTS, FETCH_POST, DELETE_POST} from '../actions';
 import _ from 'lodash';
 
 
@@ -29,7 +29,7 @@ export default function(state = {}, action) {
       // pair.
 
       const post = action.payload.data;
-      const newState = { ...state };
+      let newState = { ...state };
       newState[post.id] = post;
       return newState;
 

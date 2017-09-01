@@ -28,7 +28,7 @@ class PostIndex extends Component {
         <div className="row">
           <div className="sixteen wide column">
             <div className="ui grid">
-              <div className="twelve wide column centered">
+              <div className="ten wide column centered">
                 <h4>Create a Post</h4>
                 <PostsNew />
               </div>
