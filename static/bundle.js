@@ -79,17 +79,17 @@
 
 	var _reducers2 = _interopRequireDefault(_reducers);
 
-	var _posts_index = __webpack_require__(551);
+	var _links_index = __webpack_require__(551);
 
-	var _posts_index2 = _interopRequireDefault(_posts_index);
+	var _links_index2 = _interopRequireDefault(_links_index);
 
-	var _posts_new = __webpack_require__(552);
+	var _links_new = __webpack_require__(552);
 
-	var _posts_new2 = _interopRequireDefault(_posts_new);
+	var _links_new2 = _interopRequireDefault(_links_new);
 
-	var _posts_show = __webpack_require__(553);
+	var _links_show = __webpack_require__(553);
 
-	var _posts_show2 = _interopRequireDefault(_posts_show);
+	var _links_show2 = _interopRequireDefault(_links_show);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -160,9 +160,9 @@
 	        _reactRouterDom.Switch,
 	        null,
 	        ' ',
-	        _react2.default.createElement(_reactRouterDom.Route, { path: '/posts/new', component: _posts_new2.default }),
-	        _react2.default.createElement(_reactRouterDom.Route, { path: '/posts/:id', component: _posts_show2.default }),
-	        _react2.default.createElement(_reactRouterDom.Route, { path: '/', component: _posts_index2.default })
+	        _react2.default.createElement(_reactRouterDom.Route, { path: '/links/new', component: _links_new2.default }),
+	        _react2.default.createElement(_reactRouterDom.Route, { path: '/links/:id', component: _links_show2.default }),
+	        _react2.default.createElement(_reactRouterDom.Route, { path: '/', component: _links_index2.default })
 	      )
 	    )
 	  )
@@ -28945,14 +28945,14 @@
 
 	var _reduxForm = __webpack_require__(280);
 
-	var _reducer_posts = __webpack_require__(522);
+	var _reducer_links = __webpack_require__(522);
 
-	var _reducer_posts2 = _interopRequireDefault(_reducer_posts);
+	var _reducer_links2 = _interopRequireDefault(_reducer_links);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var rootReducer = (0, _redux.combineReducers)({
-	  posts: _reducer_posts2.default,
+	  links: _reducer_links2.default,
 	  form: _reduxForm.reducer
 	});
 
@@ -41067,10 +41067,10 @@
 	*/
 
 
-	// We don't have a case for the CREATE_POST action because
+	// We don't have a case for the CREATE_LINK action because
 	// for that action we use another promise with a callback to automatically
 	// redirect back to the main page after the ajax promise is resolved.
-	// When the main page is hit, react router renders PostIndex.
+	// When the main page is hit, react router renders LinkIndex.
 
 
 	exports.default = function () {
@@ -41079,30 +41079,30 @@
 
 	  // Ultimately, we need to return some kind of object here.
 	  switch (action.type) {
-	    case _actions.FETCH_POST:
-	      // We really don't want to throw away all of our existing posts.
-	      // Show, let's take all of the existing posts on the client '...state',
+	    case _actions.FETCH_LINK:
+	      // We really don't want to throw away all of our existing links.
+	      // Show, let's take all of the existing links on the client '...state',
 	      // take them all out that state object and put them all into this new
 	      // object in return. Then, on tops of that, we'll add a new key/value
 	      // pair.
 
-	      var post = action.payload.data;
+	      var link = action.payload.data;
 	      var newState = _extends({}, state);
-	      newState[post.id] = post;
+	      newState[link.id] = link;
 	      return newState;
 
 	    // This does hte same thing as the above code.
 	    // The square braces do not create an array. This does key interpolation.
 	    // It makes a new key on this object for whatever the value of
 	    // action.payload.data.id is, setting it's value to action.payload.data.
-	    // It sort of accumulates posts over time.
+	    // It sort of accumulates links over time.
 
 	    //return { ...state, [action.payload.data.id]: action.payload.data};
-	    case _actions.FETCH_POSTS:
-	      console.log(action.payload.data); // [post1, post2, post3, ...]
-	      // We want { 4: post, ...}
+	    case _actions.FETCH_LINKS:
+	      console.log(action.payload.data); // [link1, link2, link3, ...]
+	      // We want { 4: link, ...}
 	      return _lodash2.default.mapKeys(action.payload.data, 'id');
-	    case _actions.DELETE_POST:
+	    case _actions.DELETE_LINK:
 	      return _lodash2.default.omit(state, action.payload);
 	    default:
 	      return state;
@@ -41126,11 +41126,11 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.DELETE_POST = exports.FETCH_POST = exports.CREATE_POST = exports.FETCH_POSTS = undefined;
-	exports.fetchPosts = fetchPosts;
-	exports.createPost = createPost;
-	exports.fetchPost = fetchPost;
-	exports.deletePost = deletePost;
+	exports.DELETE_LINK = exports.FETCH_LINK = exports.CREATE_LINK = exports.FETCH_LINKS = undefined;
+	exports.fetchLinks = fetchLinks;
+	exports.createLink = createLink;
+	exports.fetchLink = fetchLink;
+	exports.deleteLink = deleteLink;
 
 	var _axios = __webpack_require__(524);
 
@@ -41138,26 +41138,26 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var FETCH_POSTS = exports.FETCH_POSTS = 'fetch_posts';
-	var CREATE_POST = exports.CREATE_POST = 'create_post';
-	var FETCH_POST = exports.FETCH_POST = 'fetch_post';
-	var DELETE_POST = exports.DELETE_POST = 'delete_post';
+	var FETCH_LINKS = exports.FETCH_LINKS = 'fetch_links';
+	var CREATE_LINK = exports.CREATE_LINK = 'create_link';
+	var FETCH_LINK = exports.FETCH_LINK = 'fetch_link';
+	var DELETE_LINK = exports.DELETE_LINK = 'delete_link';
 
 	var ROOT_URL = 'http://reduxblog.herokuapp.com/api';
-	// Use Postman to manually create some posts.
+	// Use Postman to manually create some links.
 	var API_KEY = '?key=JASON9999'; // Choose any random key.
 
-	function fetchPosts() {
+	function fetchLinks() {
 	  var request = _axios2.default.get(ROOT_URL + '/posts' + API_KEY);
 	  return {
-	    type: FETCH_POSTS,
+	    type: FETCH_LINKS,
 	    payload: request
 	  };
 	}
 
-	function createPost(values, callback) {
+	function createLink(values, callback) {
 	  // OLD VERSION
-	  //const request = axios.post(`${ROOT_URL}/posts${API_KEY}`, values);
+	  //const request = axios.post(`${ROOT_URL}/links${API_KEY}`, values);
 
 	  // new version will callback which contains promise to back back to main page
 	  // after request axios promise is resolved.
@@ -41166,27 +41166,27 @@
 	  });
 
 	  return {
-	    type: CREATE_POST,
+	    type: CREATE_LINK,
 	    payload: request
 	  };
 	}
 
-	function fetchPost(id) {
+	function fetchLink(id) {
 	  var request = _axios2.default.get(ROOT_URL + '/posts/' + id + API_KEY);
 
 	  return {
-	    type: FETCH_POST,
+	    type: FETCH_LINK,
 	    payload: request
 	  };
 	}
 
-	function deletePost(id, callback) {
+	function deleteLink(id, callback) {
 	  var request = _axios2.default.delete(ROOT_URL + '/posts/' + id + API_KEY).then(function () {
 	    return callback();
 	  });
 
 	  return {
-	    type: DELETE_POST,
+	    type: DELETE_LINK,
 	    payload: request
 	  };
 	}
@@ -55100,9 +55100,9 @@
 
 	var _reactRouterDom = __webpack_require__(216);
 
-	var _posts_new = __webpack_require__(552);
+	var _links_new = __webpack_require__(552);
 
-	var _posts_new2 = _interopRequireDefault(_posts_new);
+	var _links_new2 = _interopRequireDefault(_links_new);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -55112,34 +55112,34 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var PostIndex = function (_Component) {
-	  _inherits(PostIndex, _Component);
+	var LinkIndex = function (_Component) {
+	  _inherits(LinkIndex, _Component);
 
-	  function PostIndex() {
-	    _classCallCheck(this, PostIndex);
+	  function LinkIndex() {
+	    _classCallCheck(this, LinkIndex);
 
-	    return _possibleConstructorReturn(this, (PostIndex.__proto__ || Object.getPrototypeOf(PostIndex)).apply(this, arguments));
+	    return _possibleConstructorReturn(this, (LinkIndex.__proto__ || Object.getPrototypeOf(LinkIndex)).apply(this, arguments));
 	  }
 
-	  _createClass(PostIndex, [{
+	  _createClass(LinkIndex, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      this.props.fetchPosts();
+	      this.props.fetchLinks();
 	    }
 	  }, {
-	    key: 'renderPosts',
-	    value: function renderPosts() {
-	      return _.map(this.props.posts, function (post) {
+	    key: 'renderLinks',
+	    value: function renderLinks() {
+	      return _.map(this.props.links, function (link) {
 	        return _react2.default.createElement(
 	          'tr',
-	          { key: post.id },
+	          { key: link.id },
 	          _react2.default.createElement(
 	            'td',
 	            null,
 	            _react2.default.createElement(
 	              _reactRouterDom.Link,
-	              { to: '/posts/' + post.id },
-	              post.title
+	              { to: '/links/' + link.id },
+	              link.title
 	            )
 	          )
 	        );
@@ -55166,16 +55166,16 @@
 	                _react2.default.createElement(
 	                  'h4',
 	                  null,
-	                  'Create a Post'
+	                  'Create a Link'
 	                ),
-	                _react2.default.createElement(_posts_new2.default, null)
+	                _react2.default.createElement(_links_new2.default, null)
 	              )
 	            ),
 	            _react2.default.createElement('br', null),
 	            _react2.default.createElement(
 	              'h4',
 	              null,
-	              'Posts'
+	              'Links'
 	            ),
 	            _react2.default.createElement(
 	              'table',
@@ -55183,7 +55183,7 @@
 	              _react2.default.createElement(
 	                'tbody',
 	                null,
-	                this.renderPosts()
+	                this.renderLinks()
 	              )
 	            )
 	          )
@@ -55192,16 +55192,16 @@
 	    }
 	  }]);
 
-	  return PostIndex;
+	  return LinkIndex;
 	}(_react.Component);
 
 	function mapStateToProps(state) {
-	  return { posts: state.posts };
+	  return { links: state.links };
 	}
 
-	// export default connect(null, { fetchPosts: fetchPosts })(PostIndex);
+	// export default connect(null, { fetchLinks: fetchLinks })(LinkIndex);
 	// is same as ...
-	exports.default = (0, _reactRedux.connect)(mapStateToProps, { fetchPosts: _actions.fetchPosts })(PostIndex);
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, { fetchLinks: _actions.fetchLinks })(LinkIndex);
 	// The above is identical to using mapDispatchToProps.
 
 /***/ }),
@@ -55241,16 +55241,16 @@
 	// See https://nodejs.org/dist/latest-v7.x/docs/api/modules.html#modules_folders_as_modules
 
 
-	var PostsNew = function (_Component) {
-	  _inherits(PostsNew, _Component);
+	var LinksNew = function (_Component) {
+	  _inherits(LinksNew, _Component);
 
-	  function PostsNew() {
-	    _classCallCheck(this, PostsNew);
+	  function LinksNew() {
+	    _classCallCheck(this, LinksNew);
 
-	    return _possibleConstructorReturn(this, (PostsNew.__proto__ || Object.getPrototypeOf(PostsNew)).apply(this, arguments));
+	    return _possibleConstructorReturn(this, (LinksNew.__proto__ || Object.getPrototypeOf(LinksNew)).apply(this, arguments));
 	  }
 
-	  _createClass(PostsNew, [{
+	  _createClass(LinksNew, [{
 	    key: 'renderField',
 	    value: function renderField(field) {
 	      //console.log(field.foo)
@@ -55279,10 +55279,10 @@
 
 	      //console.log(values);
 	      //console.log(this.props);
-	      // this.props.history.push('/'); --> May return us to main page before post is created. Not ideal.
-	      this.props.createPost(values, function () {
+	      // this.props.history.push('/'); --> May return us to main page before link is created. Not ideal.
+	      this.props.createLink(values, function () {
 	        _this2.props.reset();
-	        _this2.props.fetchPosts();
+	        _this2.props.fetchLinks();
 	        //this.props.history.push('/');
 	      });
 	    }
@@ -55312,7 +55312,7 @@
 	          }),
 	          _react2.default.createElement(_reduxForm.Field, {
 	            foo: 'FOO CONTENT',
-	            label: 'Post Content',
+	            label: 'Link Content',
 	            name: 'content',
 	            component: this.renderField
 	          }),
@@ -55331,7 +55331,7 @@
 	    }
 	  }]);
 
-	  return PostsNew;
+	  return LinksNew;
 	}(_react.Component);
 
 	function validate(values) {
@@ -55361,14 +55361,14 @@
 	// OLD VERSION
 	//export default reduxForm({
 	//  validate,
-	//  form: 'PostsNewForm'
-	//})(PostsNew)
+	//  form: 'LinksNewForm'
+	//})(LinksNew)
 
 	// NEW VERSION
 	exports.default = (0, _reduxForm.reduxForm)({
 	  validate: validate,
-	  form: 'PostsNewForm'
-	})((0, _reactRedux.connect)(null, { createPost: _actions.createPost, fetchPosts: _actions.fetchPosts })(PostsNew));
+	  form: 'LinksNewForm'
+	})((0, _reactRedux.connect)(null, { createLink: _actions.createLink, fetchLinks: _actions.fetchLinks })(LinksNew));
 
 /***/ }),
 /* 553 */
@@ -55400,29 +55400,29 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var PostsShow = function (_Component) {
-	  _inherits(PostsShow, _Component);
+	var LinksShow = function (_Component) {
+	  _inherits(LinksShow, _Component);
 
-	  function PostsShow() {
-	    _classCallCheck(this, PostsShow);
+	  function LinksShow() {
+	    _classCallCheck(this, LinksShow);
 
-	    return _possibleConstructorReturn(this, (PostsShow.__proto__ || Object.getPrototypeOf(PostsShow)).apply(this, arguments));
+	    return _possibleConstructorReturn(this, (LinksShow.__proto__ || Object.getPrototypeOf(LinksShow)).apply(this, arguments));
 	  }
 
-	  _createClass(PostsShow, [{
+	  _createClass(LinksShow, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
 	      // If we really care about network performance and we don't want to fetch
-	      // the 'same' post twice, you can do this:
-	      //    if (!this.props.post) {
+	      // the 'same' link twice, you can do this:
+	      //    if (!this.props.link) {
 	      //      const { id } = this.props.match.params; // Provided to us by react-router
-	      //     this.props.fetchPost(id);
+	      //     this.props.fetchLink(id);
 	      //    }
 	      // However, it's probably better to play it safe a re-fetch because
 	      // the user may have been sitting at this page for a long time.
 	      var id = this.props.match.params.id; // Provided to us by react-router
 
-	      this.props.fetchPost(id);
+	      this.props.fetchLink(id);
 	    }
 	  }, {
 	    key: 'onDeleteClick',
@@ -55432,7 +55432,7 @@
 	      // Pull the id from the URL.
 	      var id = this.props.match.params.id; // Provided to us by react-router
 
-	      this.props.deletePost(id, function () {
+	      this.props.deleteLink(id, function () {
 	        _this2.props.history.push('/');
 	      });
 	    }
@@ -55440,19 +55440,19 @@
 	    key: 'render',
 	    value: function render() {
 	      {/*
-	         We would have just returned all { posts } from mapStateToProps, and then in
-	         this function we would have used posts[this.props.match.params.id], but
+	         We would have just returned all { links } from mapStateToProps, and then in
+	         this function we would have used links[this.props.match.params.id], but
 	         that wouldn't have been as clean and the component wouldn't have been
-	         very reusable. It would also expose PostsShow to a huge object as a
+	         very reusable. It would also expose LinksShow to a huge object as a
 	         dependency. However, this component only really cares about ONE particular
-	         post, so why should we pass it an entire list of posts??
+	         link, so why should we pass it an entire list of links??
 	         Also, many times mapStateToProps function is stored in a separate file.
 	         Doing so would make this file/component even more reusable.
 	        */}
-	      var post = this.props.post;
+	      var link = this.props.link;
 
 
-	      if (!post) {
+	      if (!link) {
 	        // We need this because this component will probably render long before
 	        // the axios request is resolved and the action > reducer > component
 	        // flow kicks off.
@@ -55477,49 +55477,49 @@
 	            className: 'ui red button right floated column',
 	            onClick: this.onDeleteClick.bind(this)
 	          },
-	          'Delete Post'
+	          'Delete Link'
 	        ),
 	        _react2.default.createElement(
 	          'h3',
 	          null,
-	          post.title
+	          link.title
 	        ),
 	        _react2.default.createElement(
 	          'h6',
 	          null,
 	          'Categories: ',
-	          post.categories
+	          link.categories
 	        ),
 	        _react2.default.createElement(
 	          'p',
 	          null,
-	          post.content
+	          link.content
 	        )
 	      );
 	    }
 	  }]);
 
-	  return PostsShow;
+	  return LinksShow;
 	}(_react.Component);
 
 	// First argument to mapStateToProps is always are application state.
 	// But there IS a second argument, which we call 'ownProps'.
-	// ownProps is props object that is headed to the PostsShow component.
+	// ownProps is props object that is headed to the LinksShow component.
 	// So, 'this.props' in the component is ABSOLUTELY EQUAL TO (===) ownProps.
 
 
 	function mapStateToProps(_ref, ownProps) {
-	  var posts = _ref.posts;
+	  var links = _ref.links;
 
-	  // return { posts } or { posts: posts }// This is dumb way.
-	  return { post: posts[ownProps.match.params.id] // This smart way.
+	  // return { links } or { links: links }// This is dumb way.
+	  return { link: links[ownProps.match.params.id] // This smart way.
 	    // Thus, you can use mapStateToProps not just to pull off peices of state,
 	    // but you can also do some intermediate logic in them.
 	  };
 	}
 
-	//export default PostsShow;
-	exports.default = (0, _reactRedux.connect)(mapStateToProps, { fetchPost: _actions.fetchPost, deletePost: _actions.deletePost })(PostsShow);
+	//export default LinksShow;
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, { fetchLink: _actions.fetchLink, deleteLink: _actions.deleteLink })(LinksShow);
 
 /***/ })
 /******/ ]);

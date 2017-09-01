@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchPosts } from '../actions';
+import { fetchLinks } from '../actions';
 import { Link } from 'react-router-dom';
-import PostsNew from './posts_new';
+import LinksNew from './links_new';
 
-class PostIndex extends Component {
+class LinkIndex extends Component {
 
   componentDidMount() {
-    this.props.fetchPosts();
+    this.props.fetchLinks();
   }
 
-  renderPosts() {
-    return _.map(this.props.posts, post => {
+  renderLinks() {
+    return _.map(this.props.links, link => {
       return (
-        <tr key={post.id}>
+        <tr key={link.id}>
           <td>
-            <Link to={`/posts/${post.id}`}>{post.title}</Link>
+            <Link to={`/links/${link.id}`}>{link.title}</Link>
           </td>
         </tr>
       );
@@ -29,15 +29,15 @@ class PostIndex extends Component {
           <div className="sixteen wide column">
             <div className="ui grid">
               <div className="ten wide column centered">
-                <h4>Create a Post</h4>
-                <PostsNew />
+                <h4>Create a Link</h4>
+                <LinksNew />
               </div>
             </div>
             <br />
-            <h4>Posts</h4>
+            <h4>Links</h4>
             <table className="ui celled table">
               <tbody>
-                {this.renderPosts()}
+                {this.renderLinks()}
               </tbody>
             </table>
           </div>
@@ -49,10 +49,10 @@ class PostIndex extends Component {
 
 
 function mapStateToProps(state) {
-  return { posts: state.posts };
+  return { links: state.links };
 }
 
-// export default connect(null, { fetchPosts: fetchPosts })(PostIndex);
+// export default connect(null, { fetchLinks: fetchLinks })(LinkIndex);
 // is same as ...
-export default connect(mapStateToProps, { fetchPosts })(PostIndex);
+export default connect(mapStateToProps, { fetchLinks })(LinkIndex);
 // The above is identical to using mapDispatchToProps.

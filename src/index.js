@@ -7,9 +7,9 @@ import 'semantic-ui-css/semantic.min.css';
 import promise from 'redux-promise';
 
 import reducers from './reducers';
-import PostIndex from './components/posts_index';
-import PostsNew from './components/posts_new';
-import PostsShow from './components/posts_show';
+import LinkIndex from './components/links_index';
+import LinksNew from './components/links_new';
+import LinksShow from './components/links_show';
 
 
 const createStoreWithMiddleware = applyMiddleware(promise)(createStore);
@@ -32,13 +32,13 @@ ReactDOM.render(
     <BrowserRouter>
       <div>
         <Switch> {/* Don't  forget the Capital S Switch statement!!! */}
-          <Route path="/posts/new" component={PostsNew} />
+          <Route path="/links/new" component={LinksNew} />
           {/* this would work too:
-            <Route path="/posts/:id/:comment" component ...
+            <Route path="/links/:id/:comment" component ...
             params are accessible in the components via 'this.props.match.params.id'
           */}
-          <Route path="/posts/:id" component={PostsShow} />
-          <Route path="/" component={PostIndex} />
+          <Route path="/links/:id" component={LinksShow} />
+          <Route path="/" component={LinkIndex} />
         </Switch>
       </div>
     </BrowserRouter>

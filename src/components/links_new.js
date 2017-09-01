@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 // We don't need to specify index.js, since that is looked up by default.
 // See https://nodejs.org/dist/latest-v7.x/docs/api/modules.html#modules_folders_as_modules
-import { createPost, fetchPosts } from '../actions';
+import { createLink, fetchLinks } from '../actions';
 
 
-class PostsNew extends Component {
+class LinksNew extends Component {
 
   renderField(field) {
     //console.log(field.foo)
@@ -45,10 +45,10 @@ class PostsNew extends Component {
   onSubmit(values) {
     //console.log(values);
     //console.log(this.props);
-    // this.props.history.push('/'); --> May return us to main page before post is created. Not ideal.
-    this.props.createPost(values, () => {
+    // this.props.history.push('/'); --> May return us to main page before link is created. Not ideal.
+    this.props.createLink(values, () => {
       this.props.reset()
-      this.props.fetchPosts()
+      this.props.fetchLinks()
       //this.props.history.push('/');
     })
   }
@@ -79,7 +79,7 @@ class PostsNew extends Component {
           />
           <Field
             foo="FOO CONTENT"
-            label="Post Content"
+            label="Link Content"
             name="content"
             component={this.renderField}
           />
@@ -121,11 +121,11 @@ function validate(values) {
 // OLD VERSION
 //export default reduxForm({
 //  validate,
-//  form: 'PostsNewForm'
-//})(PostsNew)
+//  form: 'LinksNewForm'
+//})(LinksNew)
 
 // NEW VERSION
 export default reduxForm({
   validate,
-  form: 'PostsNewForm'
-})(connect(null, { createPost, fetchPosts })(PostsNew));
+  form: 'LinksNewForm'
+})(connect(null, { createLink, fetchLinks })(LinksNew));

@@ -1,6 +1,9 @@
 {
     "dev": {
         "app_function": "app.app",
-        "s3_bucket": "zappa-go"
+        "s3_bucket": "zappa-go",
+        "environment_variables": {
+          "SERVER_NAME": "https://z4ru6xjb9f.execute-api.us-west-2.amazonaws.com/dev"
+        }
     }
 }
