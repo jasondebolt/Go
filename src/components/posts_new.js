@@ -13,7 +13,7 @@ class PostsNew extends Component {
     //console.log(field.foo)
     // const { meta } = field; // --> destructuring is cool, but keep it simple for now.
     // const { meta : { touched, error }} = field; // --> Even cooler!!
-    const className = `field ${field.meta.touched && field.meta.error ? 'ui red message': ''}`;
+    const className = `field ${field.meta.touched && field.meta.error ? 'error': ''}`;
     return (
       <div className={className}> {
         /* field.input is an object which contains a bunch
@@ -55,40 +55,42 @@ class PostsNew extends Component {
     // Pull on the handleSubmit function that we get from reduxForm.
     const { handleSubmit } = this.props;
     return (
-      <form className="ui form" onSubmit={handleSubmit(this.onSubmit.bind(this))}>
-        {/*
-          You can pass arbitrary values to the Field object and they will
-          be accessible in the component as an attribute of the 'field' object
-          within the component. See how {field.label} is used in 'renderField'
-          above.
-        */}
-        <Field
-          foo="FOO TITLE"
-          label="Title"
-          name="title"
-          component={this.renderField}
-        />
-        <Field
-          foo="FOO CATEGORIES"
-          label="Categories"
-          name="categories"
-          component={this.renderField}
-        />
-        <Field
-          foo="FOO CONTENT"
-          label="Post Content"
-          name="content"
-          component={this.renderField}
-        />
-        <button type="submit" className="ui green button">Submit</button>
-        {/*
-          Link tags actually do show up as anchor tags (see style.css file)
-        */}
-        <Link to="/" className="ui blue button">Cancel</Link>
-      </form>
-    )
+      <div className="ui segments">
+        <form className="ui segment huge form" onSubmit={handleSubmit(this.onSubmit.bind(this))}>
+          {/*
+            You can pass arbitrary values to the Field object and they will
+            be accessible in the component as an attribute of the 'field' object
+            within the component. See how {field.label} is used in 'renderField'
+            above.
+          */}
+          <Field
+            foo="FOO TITLE"
+            label="Title"
+            name="title"
+            component={this.renderField}
+          />
+          <Field
+            foo="FOO CATEGORIES"
+            label="Categories"
+            name="categories"
+            component={this.renderField}
+          />
+          <Field
+            foo="FOO CONTENT"
+            label="Post Content"
+            name="content"
+            component={this.renderField}
+          />
+          <button type="submit" className="ui green button">Submit</button>
+          {/*
+            Link tags actually do show up as anchor tags (see style.css file)
+          */}
+          <Link to="/" className="ui blue button">Cancel</Link>
+        </form>
+      </div>
+      )
+    }
   }
-}
 
 function validate(values) {
   //console.log(values) --> { title: 'asdf': categories: 'asdf', content: 'asdf'}

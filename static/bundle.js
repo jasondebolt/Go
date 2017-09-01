@@ -55100,6 +55100,10 @@
 
 	var _reactRouterDom = __webpack_require__(216);
 
+	var _posts_new = __webpack_require__(552);
+
+	var _posts_new2 = _interopRequireDefault(_posts_new);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -55149,25 +55153,27 @@
 	        { className: 'ui grid' },
 	        _react2.default.createElement(
 	          'div',
-	          { className: 'five column row' },
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'right floated column' },
-	            _react2.default.createElement(
-	              _reactRouterDom.Link,
-	              { className: 'ui blue button', to: '/posts/new' },
-	              'Add a Post'
-	            )
-	          )
-	        ),
-	        _react2.default.createElement(
-	          'div',
 	          { className: 'row' },
 	          _react2.default.createElement(
 	            'div',
-	            { className: 'wide column' },
+	            { className: 'sixteen wide column' },
 	            _react2.default.createElement(
-	              'h3',
+	              'div',
+	              { className: 'ui grid' },
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'twelve wide column centered' },
+	                _react2.default.createElement(
+	                  'h4',
+	                  null,
+	                  'Create a Post'
+	                ),
+	                _react2.default.createElement(_posts_new2.default, null)
+	              )
+	            ),
+	            _react2.default.createElement('br', null),
+	            _react2.default.createElement(
+	              'h4',
 	              null,
 	              'Posts'
 	            ),
@@ -55250,7 +55256,7 @@
 	      //console.log(field.foo)
 	      // const { meta } = field; // --> destructuring is cool, but keep it simple for now.
 	      // const { meta : { touched, error }} = field; // --> Even cooler!!
-	      var className = 'field ' + (field.meta.touched && field.meta.error ? 'ui red message' : '');
+	      var className = 'field ' + (field.meta.touched && field.meta.error ? 'error' : '');
 	      return _react2.default.createElement(
 	        'div',
 	        { className: className },
@@ -55285,35 +55291,39 @@
 	      var handleSubmit = this.props.handleSubmit;
 
 	      return _react2.default.createElement(
-	        'form',
-	        { className: 'ui form', onSubmit: handleSubmit(this.onSubmit.bind(this)) },
-	        _react2.default.createElement(_reduxForm.Field, {
-	          foo: 'FOO TITLE',
-	          label: 'Title',
-	          name: 'title',
-	          component: this.renderField
-	        }),
-	        _react2.default.createElement(_reduxForm.Field, {
-	          foo: 'FOO CATEGORIES',
-	          label: 'Categories',
-	          name: 'categories',
-	          component: this.renderField
-	        }),
-	        _react2.default.createElement(_reduxForm.Field, {
-	          foo: 'FOO CONTENT',
-	          label: 'Post Content',
-	          name: 'content',
-	          component: this.renderField
-	        }),
+	        'div',
+	        { className: 'ui segments' },
 	        _react2.default.createElement(
-	          'button',
-	          { type: 'submit', className: 'ui green button' },
-	          'Submit'
-	        ),
-	        _react2.default.createElement(
-	          _reactRouterDom.Link,
-	          { to: '/', className: 'ui blue button' },
-	          'Cancel'
+	          'form',
+	          { className: 'ui segment huge form', onSubmit: handleSubmit(this.onSubmit.bind(this)) },
+	          _react2.default.createElement(_reduxForm.Field, {
+	            foo: 'FOO TITLE',
+	            label: 'Title',
+	            name: 'title',
+	            component: this.renderField
+	          }),
+	          _react2.default.createElement(_reduxForm.Field, {
+	            foo: 'FOO CATEGORIES',
+	            label: 'Categories',
+	            name: 'categories',
+	            component: this.renderField
+	          }),
+	          _react2.default.createElement(_reduxForm.Field, {
+	            foo: 'FOO CONTENT',
+	            label: 'Post Content',
+	            name: 'content',
+	            component: this.renderField
+	          }),
+	          _react2.default.createElement(
+	            'button',
+	            { type: 'submit', className: 'ui green button' },
+	            'Submit'
+	          ),
+	          _react2.default.createElement(
+	            _reactRouterDom.Link,
+	            { to: '/', className: 'ui blue button' },
+	            'Cancel'
+	          )
 	        )
 	      );
 	    }

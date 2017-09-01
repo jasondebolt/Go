@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchPosts } from '../actions';
 import { Link } from 'react-router-dom';
+import PostsNew from './posts_new';
 
 class PostIndex extends Component {
 
@@ -24,16 +25,16 @@ class PostIndex extends Component {
   render() {
     return (
       <div className="ui grid">
-        <div className="five column row">
-          <div className="right floated column">
-            <Link className="ui blue button" to="/posts/new">
-              Add a Post
-            </Link>
-          </div>
-        </div>
         <div className="row">
-          <div className="wide column">
-            <h3>Posts</h3>
+          <div className="sixteen wide column">
+            <div className="ui grid">
+              <div className="twelve wide column centered">
+                <h4>Create a Post</h4>
+                <PostsNew />
+              </div>
+            </div>
+            <br />
+            <h4>Posts</h4>
             <table className="ui celled table">
               <tbody>
                 {this.renderPosts()}
