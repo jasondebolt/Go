@@ -42,8 +42,8 @@ export default function(state = {}, action) {
       //return { ...state, [action.payload.data.id]: action.payload.data};
     case FETCH_LINKS:
       console.log(action.payload.data); // [link1, link2, link3, ...]
-      // We want { 4: link, ...}
-      return _.mapKeys(action.payload.data, 'id');
+      // We want { alias: link, ...}
+      return _.mapKeys(action.payload.data, 'alias');
     case DELETE_LINK:
       return _.omit(state, action.payload);
     default:

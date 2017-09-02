@@ -13,10 +13,13 @@ class LinkIndex extends Component {
   renderLinks() {
     return _.map(this.props.links, link => {
       return (
-        <tr key={link.id}>
+        <tr key={link.alias}>
           <td>
-            <Link to={`/links/${link.id}`}>{link.title}</Link>
+            <Link to={`/links/${link.alias}`}>{link.alias}</Link>
           </td>
+          <td> {link.url} </td>
+          <td> {link.owner} </td>
+          <td> {link.clicks} </td>
         </tr>
       );
     });

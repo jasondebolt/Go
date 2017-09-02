@@ -41100,8 +41100,8 @@
 	    //return { ...state, [action.payload.data.id]: action.payload.data};
 	    case _actions.FETCH_LINKS:
 	      console.log(action.payload.data); // [link1, link2, link3, ...]
-	      // We want { 4: link, ...}
-	      return _lodash2.default.mapKeys(action.payload.data, 'id');
+	      // We want { alias: link, ...}
+	      return _lodash2.default.mapKeys(action.payload.data, 'alias');
 	    case _actions.DELETE_LINK:
 	      return _lodash2.default.omit(state, action.payload);
 	    default:
@@ -41143,12 +41143,11 @@
 	var FETCH_LINK = exports.FETCH_LINK = 'fetch_link';
 	var DELETE_LINK = exports.DELETE_LINK = 'delete_link';
 
-	var ROOT_URL = 'http://reduxblog.herokuapp.com/api';
-	// Use Postman to manually create some links.
-	var API_KEY = '?key=JASON9999'; // Choose any random key.
+	//const ROOT_URL = 'http://reduxblog.herokuapp.com/api'
+	var ROOT_URL = '/api';
 
 	function fetchLinks() {
-	  var request = _axios2.default.get(ROOT_URL + '/posts' + API_KEY);
+	  var request = _axios2.default.get(ROOT_URL + '/links');
 	  return {
 	    type: FETCH_LINKS,
 	    payload: request
@@ -55132,15 +55131,36 @@
 	      return _.map(this.props.links, function (link) {
 	        return _react2.default.createElement(
 	          'tr',
-	          { key: link.id },
+	          { key: link.alias },
 	          _react2.default.createElement(
 	            'td',
 	            null,
 	            _react2.default.createElement(
 	              _reactRouterDom.Link,
-	              { to: '/links/' + link.id },
-	              link.title
+	              { to: '/links/' + link.alias },
+	              link.alias
 	            )
+	          ),
+	          _react2.default.createElement(
+	            'td',
+	            null,
+	            ' ',
+	            link.url,
+	            ' '
+	          ),
+	          _react2.default.createElement(
+	            'td',
+	            null,
+	            ' ',
+	            link.owner,
+	            ' '
+	          ),
+	          _react2.default.createElement(
+	            'td',
+	            null,
+	            ' ',
+	            link.clicks,
+	            ' '
 	          )
 	        );
 	      });
@@ -55300,20 +55320,14 @@
 	          { className: 'ui segment huge form', onSubmit: handleSubmit(this.onSubmit.bind(this)) },
 	          _react2.default.createElement(_reduxForm.Field, {
 	            foo: 'FOO TITLE',
-	            label: 'Title',
-	            name: 'title',
+	            label: 'Alias',
+	            name: 'alias',
 	            component: this.renderField
 	          }),
 	          _react2.default.createElement(_reduxForm.Field, {
 	            foo: 'FOO CATEGORIES',
-	            label: 'Categories',
-	            name: 'categories',
-	            component: this.renderField
-	          }),
-	          _react2.default.createElement(_reduxForm.Field, {
-	            foo: 'FOO CONTENT',
-	            label: 'Link Content',
-	            name: 'content',
+	            label: 'Url',
+	            name: 'url',
 	            component: this.renderField
 	          }),
 	          _react2.default.createElement(
@@ -55335,18 +55349,14 @@
 	}(_react.Component);
 
 	function validate(values) {
-	  //console.log(values) --> { title: 'asdf': categories: 'asdf', content: 'asdf'}
+	  //console.log(values) --> { alias: 'asdf': url: 'asdf'}
 	  var errors = {};
 
-	  if (!values.title) {
-	    errors.title = "Enter a title!";
+	  if (!values.alias) {
+	    errors.alias = "Enter an alias!";
 	  }
-	  if (!values.categories) {
-	    errors.categories = "Enter some categories!";
-	  }
-
-	  if (!values.content) {
-	    errors.content = "Enter some content!";
+	  if (!values.url) {
+	    errors.url = "Enter a url!";
 	  }
 
 	  // If errors is empty, the form is fine to submit.

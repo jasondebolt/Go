@@ -67,20 +67,14 @@ class LinksNew extends Component {
           */}
           <Field
             foo="FOO TITLE"
-            label="Title"
-            name="title"
+            label="Alias"
+            name="alias"
             component={this.renderField}
           />
           <Field
             foo="FOO CATEGORIES"
-            label="Categories"
-            name="categories"
-            component={this.renderField}
-          />
-          <Field
-            foo="FOO CONTENT"
-            label="Link Content"
-            name="content"
+            label="Url"
+            name="url"
             component={this.renderField}
           />
           <button type="submit" className="ui green button">Submit</button>
@@ -95,18 +89,14 @@ class LinksNew extends Component {
   }
 
 function validate(values) {
-  //console.log(values) --> { title: 'asdf': categories: 'asdf', content: 'asdf'}
+  //console.log(values) --> { alias: 'asdf': url: 'asdf'}
   const errors = {}
 
-  if (!values.title) {
-    errors.title = "Enter a title!"
+  if (!values.alias) {
+    errors.alias = "Enter an alias!"
   }
-  if (!values.categories) {
-    errors.categories = "Enter some categories!"
-  }
-
-  if (!values.content) {
-    errors.content = "Enter some content!"
+  if (!values.url) {
+    errors.url = "Enter a url!"
   }
 
   // If errors is empty, the form is fine to submit.

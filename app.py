@@ -1,18 +1,22 @@
 import os
+import decimal
 import uuid
 import logging
-import json
+import simplejson as json
 import helpers
 import boto3
 import flask
 from flask import Flask, request, session, g, redirect, url_for, abort
 from flask import render_template, flash, jsonify
+from flask_json import FlaskJSON, JsonError, json_response, as_json
 import flask_s3
 from flask_oauthlib.client import OAuth
 from flask_s3 import FlaskS3
+import pdb
 
 app = Flask(__name__)
 oauth = OAuth(app)
+#json = FlaskJSON(app)
 
 def isLocal():
     return os.environ.get('SERVER_NAME') is None
@@ -36,6 +40,8 @@ app.config.update(dict(
     GOOGLE_SECRET=secrets_dict['google_secret']
 ))
 
+app.config['JSON_USE_ENCODE_METHODS'] = True
+
 google = oauth.remote_app(
     'google',
     consumer_key=app.config.get('GOOGLE_ID'),
@@ -50,15 +56,12 @@ google = oauth.remote_app(
     authorize_url='https://accounts.google.com/o/oauth2/auth',
 )
 
-DYNAMODB = boto3.resource('dynamodb')
+DYNAMODB = boto3.resource('dynamodb', region_name='us-west-2')
 MO_ENTRIES_TABLE = DYNAMODB.Table('mo-entries')
 MO_MESSAGES_TABLE = DYNAMODB.Table('mo-messages')
 
 @app.route('/')
 def show_entries():
-    #response = MO_ENTRIES_TABLE.scan()
-    #items = response.get('Items')
-    #return render_template('show_entries.html', entries=items)
     if isLocal():
         if 'user' in session:
             print('user {0} is already logged in'.format(session['user']))
@@ -66,13 +69,17 @@ def show_entries():
         else:
             redirect('/login')
     if 'google_token' in session and 'user' in session:
-        response = MO_ENTRIES_TABLE.scan()
-        items = response.get('Items')
         return render_template('index.html', user=session['user'])
     return redirect(
         '{0}/login'.format(os.environ.get(
             'SERVER_NAME', 'http://127.0.0.1:5000'))
     )
+
+@app.route('/api/links', methods=['GET'])
+def links():
+    response = MO_ENTRIES_TABLE.scan()
+    items = response.get('Items')
+    return json.dumps(items, use_decimal=True)
 
 @app.route('/edit', methods=['GET'])
 def edit_page():
