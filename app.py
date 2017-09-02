@@ -61,13 +61,14 @@ def show_entries():
     #return render_template('show_entries.html', entries=items)
     if isLocal():
         if 'user' in session:
-            return render_template('index.html')
+            print('user {0} is already logged in'.format(session['user']))
+            return render_template('index.html', user=session['user'])
         else:
             redirect('/login')
     if 'google_token' in session and 'user' in session:
         response = MO_ENTRIES_TABLE.scan()
         items = response.get('Items')
-        return render_template('index.html')
+        return render_template('index.html', user=session['user'])
     return redirect(
         '{0}/login'.format(os.environ.get(
             'SERVER_NAME', 'http://127.0.0.1:5000'))
@@ -108,7 +109,7 @@ def login():
             return redirect('/')
         return '''
             <form method="post">
-                <p><input type=text name=user>
+                <p><input type=text required name=user>
                 <p><input type=submit value=Login>
             </form>
         '''
