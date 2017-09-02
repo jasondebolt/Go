@@ -14,7 +14,10 @@ from flask_s3 import FlaskS3
 app = Flask(__name__)
 oauth = OAuth(app)
 
-if not app.debug:
+def isLocal():
+    return os.environ.get('SERVER_NAME') is None
+
+if not isLocal():
     # Use S3 bucket instead for static assets.
     s3 = FlaskS3()
     s3.init_app(app)
@@ -56,6 +59,11 @@ def show_entries():
     #response = MO_ENTRIES_TABLE.scan()
     #items = response.get('Items')
     #return render_template('show_entries.html', entries=items)
+    if isLocal():
+        if 'user' in session:
+            return render_template('index.html')
+        else:
+            redirect('/login')
     if 'google_token' in session and 'user' in session:
         response = MO_ENTRIES_TABLE.scan()
         items = response.get('Items')
@@ -92,11 +100,22 @@ def edit_entry():
     flash('Entry was successfully updated.')
     return redirect('/')
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    url = '{0}/oauth2callback'.format(
-        os.environ.get('SERVER_NAME', 'http://127.0.0.1:5000'))
-    return google.authorize(callback=url)
+    if isLocal():
+        if request.method == 'POST':
+            session['user'] = request.form['user']
+            return redirect('/')
+        return '''
+            <form method="post">
+                <p><input type=text name=user>
+                <p><input type=submit value=Login>
+            </form>
+        '''
+    else:
+        url = '{0}/oauth2callback'.format(
+            os.environ.get('SERVER_NAME', 'http://127.0.0.1:5000'))
+        return google.authorize(callback=url)
 
 @app.route('/logout')
 def logout():
@@ -105,7 +124,8 @@ def logout():
     session.clear()
     for key in session.keys():
         session.pop(key, None)
-    return render_template('landing.html')
+    return redirect('/')
+    #return render_template('landing.html')
 
 @app.route('/oauth2callback')
 def authorized():
