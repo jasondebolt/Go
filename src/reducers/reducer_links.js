@@ -30,16 +30,16 @@ export default function(state = {}, action) {
 
       const link = action.payload.data;
       let newState = { ...state };
-      newState[link.id] = link;
+      newState[link.alias] = link;
       return newState;
 
       // This does hte same thing as the above code.
       // The square braces do not create an array. This does key interpolation.
       // It makes a new key on this object for whatever the value of
-      // action.payload.data.id is, setting it's value to action.payload.data.
+      // action.payload.data.alias is, setting it's value to action.payload.data.
       // It sort of accumulates links over time.
 
-      //return { ...state, [action.payload.data.id]: action.payload.data};
+      //return { ...state, [action.payload.data.alias]: action.payload.data};
     case FETCH_LINKS:
       console.log(action.payload.data); // [link1, link2, link3, ...]
       // We want { alias: link, ...}

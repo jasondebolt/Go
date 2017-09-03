@@ -16,7 +16,6 @@ import pdb
 
 app = Flask(__name__)
 oauth = OAuth(app)
-#json = FlaskJSON(app)
 
 def isLocal():
     return os.environ.get('SERVER_NAME') is None
@@ -39,8 +38,6 @@ app.config.update(dict(
     GOOGLE_ID=secrets_dict['google_id'],
     GOOGLE_SECRET=secrets_dict['google_secret']
 ))
-
-app.config['JSON_USE_ENCODE_METHODS'] = True
 
 google = oauth.remote_app(
     'google',
@@ -80,6 +77,39 @@ def links():
     response = MO_ENTRIES_TABLE.scan()
     items = response.get('Items')
     return json.dumps(items, use_decimal=True)
+
+@app.route('/api/links/<alias>', methods=['DELETE'])
+def delete_link(alias):
+    response = MO_ENTRIES_TABLE.delete_item(
+        Key={
+            'alias': alias
+        }
+    )
+    print(response)
+    return '204'
+
+@app.route('/api/links', methods=['PUT'])
+def put_link():
+    response = MO_ENTRIES_TABLE.put_item(
+        Item={
+            'alias': request.json['alias'],
+            'url': request.json['url'],
+            'owner': session['user'],
+            'clicks': 0
+        }
+    )
+    return '201'
+
+
+@app.route('/api/links/<alias>', methods=['GET'])
+def get_link(alias):
+    response = MO_ENTRIES_TABLE.get_item(
+        Key={
+            'alias': alias
+        }
+    )
+    print(response)
+    return json.dumps(response, use_decimal=True)
 
 @app.route('/edit', methods=['GET'])
 def edit_page():

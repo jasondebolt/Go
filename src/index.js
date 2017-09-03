@@ -37,7 +37,7 @@ ReactDOM.render(
             <Route path="/links/:id/:comment" component ...
             params are accessible in the components via 'this.props.match.params.id'
           */}
-          <Route path="/links/:id" component={LinksShow} />
+          <Route path="/links/:alias" component={LinksShow} />
           <Route path="/" component={LinkIndex} />
         </Switch>
       </div>

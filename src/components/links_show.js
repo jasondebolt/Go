@@ -13,14 +13,17 @@ class LinksShow extends Component {
     //    }
     // However, it's probably better to play it safe a re-fetch because
     // the user may have been sitting at this page for a long time.
-    const { id } = this.props.match.params; // Provided to us by react-router
-    this.props.fetchLink(id);
+    const { alias } = this.props.match.params; // Provided to us by react-router
+    this.props.fetchLink(alias);
   }
 
   onDeleteClick() {
     // Pull the id from the URL.
-    const { id } = this.props.match.params; // Provided to us by react-router
-    this.props.deleteLink(id, () => {
+    const { alias } = this.props.match.params; // Provided to us by react-router
+    console.log('HERE')
+    console.log(this.props)
+    console.log('HERE')
+    this.props.deleteLink(alias, () => {
       this.props.history.push('/');
     });
   }
@@ -54,9 +57,8 @@ class LinksShow extends Component {
         >
           Delete Link
         </button>
-        <h3>{link.title}</h3>
-        <h6>Categories: {link.categories}</h6>
-        <p>{link.content}</p>
+        <h3>{link.alias}</h3>
+        <h6>Url: {link.url}</h6>
       </div>
     )
   }
@@ -69,7 +71,7 @@ class LinksShow extends Component {
 // So, 'this.props' in the component is ABSOLUTELY EQUAL TO (===) ownProps.
 function mapStateToProps({ links }, ownProps) {
   // return { links } or { links: links }// This is dumb way.
-  return { link: links[ownProps.match.params.id]} // This smart way.
+  return { link: links[ownProps.match.params.alias]} // This smart way.
   // Thus, you can use mapStateToProps not just to pull off peices of state,
   // but you can also do some intermediate logic in them.
 }

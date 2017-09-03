@@ -161,7 +161,7 @@
 	        null,
 	        ' ',
 	        _react2.default.createElement(_reactRouterDom.Route, { path: '/links/new', component: _links_new2.default }),
-	        _react2.default.createElement(_reactRouterDom.Route, { path: '/links/:id', component: _links_show2.default }),
+	        _react2.default.createElement(_reactRouterDom.Route, { path: '/links/:alias', component: _links_show2.default }),
 	        _react2.default.createElement(_reactRouterDom.Route, { path: '/', component: _links_index2.default })
 	      )
 	    )
@@ -41088,16 +41088,16 @@
 
 	      var link = action.payload.data;
 	      var newState = _extends({}, state);
-	      newState[link.id] = link;
+	      newState[link.alias] = link;
 	      return newState;
 
 	    // This does hte same thing as the above code.
 	    // The square braces do not create an array. This does key interpolation.
 	    // It makes a new key on this object for whatever the value of
-	    // action.payload.data.id is, setting it's value to action.payload.data.
+	    // action.payload.data.alias is, setting it's value to action.payload.data.
 	    // It sort of accumulates links over time.
 
-	    //return { ...state, [action.payload.data.id]: action.payload.data};
+	    //return { ...state, [action.payload.data.alias]: action.payload.data};
 	    case _actions.FETCH_LINKS:
 	      console.log(action.payload.data); // [link1, link2, link3, ...]
 	      // We want { alias: link, ...}
@@ -41160,7 +41160,7 @@
 
 	  // new version will callback which contains promise to back back to main page
 	  // after request axios promise is resolved.
-	  var request = _axios2.default.post(ROOT_URL + '/posts' + API_KEY, values).then(function () {
+	  var request = _axios2.default.put(ROOT_URL + '/links', values).then(function () {
 	    return callback();
 	  });
 
@@ -41170,8 +41170,8 @@
 	  };
 	}
 
-	function fetchLink(id) {
-	  var request = _axios2.default.get(ROOT_URL + '/posts/' + id + API_KEY);
+	function fetchLink(alias) {
+	  var request = _axios2.default.get(ROOT_URL + '/links/' + alias);
 
 	  return {
 	    type: FETCH_LINK,
@@ -41179,8 +41179,8 @@
 	  };
 	}
 
-	function deleteLink(id, callback) {
-	  var request = _axios2.default.delete(ROOT_URL + '/posts/' + id + API_KEY).then(function () {
+	function deleteLink(alias, callback) {
+	  var request = _axios2.default.delete(ROOT_URL + '/links/' + alias).then(function () {
 	    return callback();
 	  });
 
@@ -55430,9 +55430,9 @@
 	      //    }
 	      // However, it's probably better to play it safe a re-fetch because
 	      // the user may have been sitting at this page for a long time.
-	      var id = this.props.match.params.id; // Provided to us by react-router
+	      var alias = this.props.match.params.alias; // Provided to us by react-router
 
-	      this.props.fetchLink(id);
+	      this.props.fetchLink(alias);
 	    }
 	  }, {
 	    key: 'onDeleteClick',
@@ -55440,9 +55440,12 @@
 	      var _this2 = this;
 
 	      // Pull the id from the URL.
-	      var id = this.props.match.params.id; // Provided to us by react-router
+	      var alias = this.props.match.params.alias; // Provided to us by react-router
 
-	      this.props.deleteLink(id, function () {
+	      console.log('HERE');
+	      console.log(this.props);
+	      console.log('HERE');
+	      this.props.deleteLink(alias, function () {
 	        _this2.props.history.push('/');
 	      });
 	    }
@@ -55492,18 +55495,13 @@
 	        _react2.default.createElement(
 	          'h3',
 	          null,
-	          link.title
+	          link.alias
 	        ),
 	        _react2.default.createElement(
 	          'h6',
 	          null,
-	          'Categories: ',
-	          link.categories
-	        ),
-	        _react2.default.createElement(
-	          'p',
-	          null,
-	          link.content
+	          'Url: ',
+	          link.url
 	        )
 	      );
 	    }
@@ -55522,7 +55520,7 @@
 	  var links = _ref.links;
 
 	  // return { links } or { links: links }// This is dumb way.
-	  return { link: links[ownProps.match.params.id] // This smart way.
+	  return { link: links[ownProps.match.params.alias] // This smart way.
 	    // Thus, you can use mapStateToProps not just to pull off peices of state,
 	    // but you can also do some intermediate logic in them.
 	  };

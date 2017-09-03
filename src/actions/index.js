@@ -21,7 +21,7 @@ export function createLink(values, callback) {
 
   // new version will callback which contains promise to back back to main page
   // after request axios promise is resolved.
-  const request = axios.post(`${ROOT_URL}/posts${API_KEY}`, values).then(
+  const request = axios.put(`${ROOT_URL}/links`, values).then(
     () => callback());
 
   return {
@@ -30,8 +30,8 @@ export function createLink(values, callback) {
   }
 }
 
-export function fetchLink(id) {
-  const request = axios.get(`${ROOT_URL}/posts/${id}${API_KEY}`)
+export function fetchLink(alias) {
+  const request = axios.get(`${ROOT_URL}/links/${alias}`)
 
   return {
     type: FETCH_LINK,
@@ -39,8 +39,8 @@ export function fetchLink(id) {
   }
 }
 
-export function deleteLink(id, callback) {
-  const request = axios.delete(`${ROOT_URL}/posts/${id}${API_KEY}`).then(
+export function deleteLink(alias, callback) {
+  const request = axios.delete(`${ROOT_URL}/links/${alias}`).then(
     () => callback());
 
   return {
