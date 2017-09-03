@@ -32,8 +32,10 @@ class LinkIndex extends Component {
           <div className="sixteen wide column">
             <div className="ui grid">
               <div className="ten wide column centered">
-                <h4>Create a Link</h4>
-                <LinksNew />
+                <div className="ui segment">
+                  <h4>Create a Link</h4>
+                  <LinksNew />
+                </div>
               </div>
             </div>
             <br />

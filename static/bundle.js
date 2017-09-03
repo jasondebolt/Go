@@ -79,6 +79,10 @@
 
 	var _reducers2 = _interopRequireDefault(_reducers);
 
+	var _header = __webpack_require__(557);
+
+	var _header2 = _interopRequireDefault(_header);
+
 	var _links_index = __webpack_require__(551);
 
 	var _links_index2 = _interopRequireDefault(_links_index);
@@ -86,6 +90,10 @@
 	var _links_new = __webpack_require__(552);
 
 	var _links_new2 = _interopRequireDefault(_links_new);
+
+	var _links_update = __webpack_require__(556);
+
+	var _links_update2 = _interopRequireDefault(_links_update);
 
 	var _links_show = __webpack_require__(553);
 
@@ -156,11 +164,13 @@
 	    _react2.default.createElement(
 	      'div',
 	      null,
+	      _react2.default.createElement(_header2.default, null),
 	      _react2.default.createElement(
 	        _reactRouterDom.Switch,
 	        null,
 	        ' ',
 	        _react2.default.createElement(_reactRouterDom.Route, { path: '/links/new', component: _links_new2.default }),
+	        _react2.default.createElement(_reactRouterDom.Route, { path: '/links/update', component: _links_update2.default }),
 	        _react2.default.createElement(_reactRouterDom.Route, { path: '/links/:alias', component: _links_show2.default }),
 	        _react2.default.createElement(_reactRouterDom.Route, { path: '/', component: _links_index2.default })
 	      )
@@ -55184,11 +55194,15 @@
 	                'div',
 	                { className: 'ten wide column centered' },
 	                _react2.default.createElement(
-	                  'h4',
-	                  null,
-	                  'Create a Link'
-	                ),
-	                _react2.default.createElement(_links_new2.default, null)
+	                  'div',
+	                  { className: 'ui segment' },
+	                  _react2.default.createElement(
+	                    'h4',
+	                    null,
+	                    'Create a Link'
+	                  ),
+	                  _react2.default.createElement(_links_new2.default, null)
+	                )
 	              )
 	            ),
 	            _react2.default.createElement('br', null),
@@ -55442,9 +55456,6 @@
 	      // Pull the id from the URL.
 	      var alias = this.props.match.params.alias; // Provided to us by react-router
 
-	      console.log('HERE');
-	      console.log(this.props);
-	      console.log('HERE');
 	      this.props.deleteLink(alias, function () {
 	        _this2.props.history.push('/');
 	      });
@@ -55528,6 +55539,279 @@
 
 	//export default LinksShow;
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, { fetchLink: _actions.fetchLink, deleteLink: _actions.deleteLink })(LinksShow);
+
+/***/ }),
+/* 554 */,
+/* 555 */,
+/* 556 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reduxForm = __webpack_require__(280);
+
+	var _reactRouterDom = __webpack_require__(216);
+
+	var _reactRedux = __webpack_require__(160);
+
+	var _actions = __webpack_require__(523);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	// We don't need to specify index.js, since that is looked up by default.
+	// See https://nodejs.org/dist/latest-v7.x/docs/api/modules.html#modules_folders_as_modules
+
+
+	var LinksUpdate = function (_Component) {
+	  _inherits(LinksUpdate, _Component);
+
+	  function LinksUpdate() {
+	    _classCallCheck(this, LinksUpdate);
+
+	    return _possibleConstructorReturn(this, (LinksUpdate.__proto__ || Object.getPrototypeOf(LinksUpdate)).apply(this, arguments));
+	  }
+
+	  _createClass(LinksUpdate, [{
+	    key: 'renderField',
+	    value: function renderField(field) {
+	      //console.log(field.foo)
+	      // const { meta } = field; // --> destructuring is cool, but keep it simple for now.
+	      // const { meta : { touched, error }} = field; // --> Even cooler!!
+	      var className = 'field ' + (field.meta.touched && field.meta.error ? 'error' : '');
+	      return _react2.default.createElement(
+	        'div',
+	        { className: className },
+	        ' ',
+	        _react2.default.createElement(
+	          'label',
+	          null,
+	          field.label
+	        ),
+	        _react2.default.createElement('input', _extends({
+	          type: 'text'
+	        }, field.input)),
+	        field.meta.touched ? field.meta.error : ''
+	      );
+	    }
+	  }, {
+	    key: 'onSubmit',
+	    value: function onSubmit(values) {
+	      var _this2 = this;
+
+	      //console.log(values);
+	      //console.log(this.props);
+	      // this.props.history.push('/'); --> May return us to main page before link is created. Not ideal.
+	      this.props.createLink(values, function () {
+	        _this2.props.reset();
+	        _this2.props.fetchLinks();
+	        //this.props.history.push('/');
+	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      // Pull on the handleSubmit function that we get from reduxForm.
+	      var handleSubmit = this.props.handleSubmit;
+
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'ui segments' },
+	        _react2.default.createElement(
+	          'form',
+	          { className: 'ui segment huge form', onSubmit: handleSubmit(this.onSubmit.bind(this)) },
+	          _react2.default.createElement(_reduxForm.Field, {
+	            label: 'Alias',
+	            name: 'alias',
+	            component: this.renderField
+	          }),
+	          _react2.default.createElement(_reduxForm.Field, {
+	            label: 'Url',
+	            name: 'url',
+	            component: this.renderField
+	          }),
+	          _react2.default.createElement(_reduxForm.Field, {
+	            label: 'Owner',
+	            name: 'owner',
+	            component: this.renderField
+	          }),
+	          _react2.default.createElement(
+	            'button',
+	            { type: 'submit', className: 'ui green button' },
+	            'Submit'
+	          ),
+	          _react2.default.createElement(
+	            _reactRouterDom.Link,
+	            { to: '/', className: 'ui blue button' },
+	            'Cancel'
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return LinksUpdate;
+	}(_react.Component);
+
+	function validate(values) {
+	  //console.log(values) --> { alias: 'asdf': url: 'asdf'}
+	  var errors = {};
+
+	  if (!values.alias) {
+	    errors.alias = "Enter an alias!";
+	  }
+	  if (!values.url) {
+	    errors.url = "Enter a url!";
+	  }
+	  if (!values.owner) {
+	    errors.owner = "Enter an owner!";
+	  }
+
+	  // If errors is empty, the form is fine to submit.
+	  return errors;
+	}
+
+	// Make sure that the string that you assign to the form property is unique.
+	// This is a helper that allow our redux form to communicate directly from
+	// our component to the reducer that we've already setup. I think that
+	// this just attaches a bunch of action creators to the component??
+
+	// OLD VERSION
+	//export default reduxForm({
+	//  validate,
+	//  form: 'LinksUpdateForm'
+	//})(LinksUpdate)
+
+	// NEW VERSION
+	exports.default = (0, _reduxForm.reduxForm)({
+	  validate: validate,
+	  form: 'LinksUpdateForm'
+	})((0, _reactRedux.connect)(null, { createLink: _actions.createLink, fetchLinks: _actions.fetchLinks })(LinksUpdate));
+
+/***/ }),
+/* 557 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRouterDom = __webpack_require__(216);
+
+	var _axios = __webpack_require__(524);
+
+	var _axios2 = _interopRequireDefault(_axios);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Header = function (_Component) {
+	  _inherits(Header, _Component);
+
+	  function Header(props) {
+	    _classCallCheck(this, Header);
+
+	    var _this = _possibleConstructorReturn(this, (Header.__proto__ || Object.getPrototypeOf(Header)).call(this, props));
+
+	    _this.state = { 'user': '' };
+	    return _this;
+	  }
+
+	  _createClass(Header, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      var _this2 = this;
+
+	      _axios2.default.get('/api/context').then(function (response) {
+	        var user = response.data.user;
+	        console.log(response);
+	        console.log(response.data.user);
+	        _this2.setState({ 'user': user });
+	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var user = this.props.user;
+
+	      if (user == '') {
+	        return _react2.default.createElement(
+	          'div',
+	          null,
+	          'Loading...'
+	        );
+	      }
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'ui fixed inverted menu' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'ui container' },
+	          _react2.default.createElement(
+	            'a',
+	            { href: '#', className: 'header item' },
+	            _react2.default.createElement('img', { className: 'logo ui image', src: '/static/logo.png' })
+	          ),
+	          _react2.default.createElement(
+	            _reactRouterDom.Link,
+	            { className: 'header item', to: '/links' },
+	            ' Go '
+	          ),
+	          _react2.default.createElement(
+	            _reactRouterDom.Link,
+	            { className: 'header item', to: '/links/update' },
+	            ' Update Link '
+	          ),
+	          _react2.default.createElement(
+	            'a',
+	            { href: '/logout', className: 'header item' },
+	            'Logout'
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'header item right' },
+	            ' Welcome, \xA0 ',
+	            this.state.user,
+	            ' '
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return Header;
+	}(_react.Component);
+
+	exports.default = Header;
 
 /***/ })
 /******/ ]);

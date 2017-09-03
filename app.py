@@ -62,15 +62,21 @@ def show_entries():
     if isLocal():
         if 'user' in session:
             print('user {0} is already logged in'.format(session['user']))
-            return render_template('index.html', user=session['user'])
+            return render_template('index.html')
         else:
             redirect('/login')
     if 'google_token' in session and 'user' in session:
-        return render_template('index.html', user=session['user'])
+        return render_template('index.html')
     return redirect(
         '{0}/login'.format(os.environ.get(
             'SERVER_NAME', 'http://127.0.0.1:5000'))
     )
+
+@app.route('/api/context', methods=['GET'])
+def context():
+    return json.dumps({
+        'user': session['user']
+    })
 
 @app.route('/api/links', methods=['GET'])
 def links():
@@ -266,7 +272,7 @@ def index():
         flash('New entry was successfully posted')
     response = MO_MESSAGES_TABLE.scan()
     items = response.get('Items')
-    return render_template('messages.html', items=items)
+    return render_template('messages.html')
 
 
 if __name__ == '__main__':

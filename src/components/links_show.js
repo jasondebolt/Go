@@ -20,9 +20,6 @@ class LinksShow extends Component {
   onDeleteClick() {
     // Pull the id from the URL.
     const { alias } = this.props.match.params; // Provided to us by react-router
-    console.log('HERE')
-    console.log(this.props)
-    console.log('HERE')
     this.props.deleteLink(alias, () => {
       this.props.history.push('/');
     });

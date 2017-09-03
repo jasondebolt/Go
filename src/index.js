@@ -7,8 +7,10 @@ import 'semantic-ui-css/semantic.min.css';
 import promise from 'redux-promise';
 
 import reducers from './reducers';
+import Header from './components/header';
 import LinkIndex from './components/links_index';
 import LinksNew from './components/links_new';
+import LinksUpdate from './components/links_update';
 import LinksShow from './components/links_show';
 
 
@@ -31,9 +33,13 @@ ReactDOM.render(
   <Provider store={createStoreWithMiddleware(reducers)}>
     <BrowserRouter>
       <div>
+        <Header />
         <Switch> {/* Don't  forget the Capital S Switch statement!!! */}
           <Route path="/links/new" component={LinksNew} />
+          <Route path="/links/update" component={LinksUpdate} />
           {/* this would work too:
+            <Route path="/links/new" component={LinksNew} />
+            {/* this would work too:
             <Route path="/links/:id/:comment" component ...
             params are accessible in the components via 'this.props.match.params.id'
           */}
