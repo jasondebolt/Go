@@ -111,7 +111,7 @@
 	        _reactRouterDom.Switch,
 	        null,
 	        ' ',
-	        _react2.default.createElement(_reactRouterDom.Route, { path: '/links/:alias', component: _links_edit2.default }),
+	        _react2.default.createElement(_reactRouterDom.Route, { path: '/links/edit/:alias+', component: _links_edit2.default }),
 	        _react2.default.createElement(_reactRouterDom.Route, { path: '/', component: _links_index2.default })
 	      )
 	    )
@@ -55248,7 +55248,7 @@
 	            null,
 	            _react2.default.createElement(
 	              _reactRouterDom.Link,
-	              { to: '/links/' + link.alias },
+	              { to: '/links/edit/' + link.alias },
 	              link.alias
 	            )
 	          ),

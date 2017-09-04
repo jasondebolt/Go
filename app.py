@@ -58,6 +58,8 @@ MO_ENTRIES_TABLE = DYNAMODB.Table('mo-entries')
 MO_MESSAGES_TABLE = DYNAMODB.Table('mo-messages')
 API_URL = '/api'
 
+RESERVED_PATHS = ['/api', '/static']
+
 @app.route('/')
 def show_entries():
     if isLocal():
@@ -196,7 +198,7 @@ def environ():
         return str(os.environ)
     return 'not running locally.', 200
 
-@app.route('/<alias>')
+@app.route('/<path:alias>')
 def redirect_url(alias):
     """Redirects to the URL associated with the entry."""
     ddb_response = MO_ENTRIES_TABLE.get_item(

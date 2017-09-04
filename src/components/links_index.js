@@ -15,7 +15,7 @@ class LinkIndex extends Component {
       return (
         <tr key={link.alias}>
           <td>
-            <Link to={`/links/${link.alias}`}>{link.alias}</Link>
+            <Link to={`/links/edit/${link.alias}`}>{link.alias}</Link>
           </td>
           <td> {link.url} </td>
           <td> {link.owner} </td>

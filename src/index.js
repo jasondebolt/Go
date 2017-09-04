@@ -26,7 +26,7 @@ ReactDOM.render(
             <Route path="/links/:alias/:comment" component ...
             params are accessible in the components via 'this.props.match.params.id'
           */}
-          <Route path="/links/:alias" component={LinksEdit} />
+          <Route path="/links/edit/:alias+" component={LinksEdit} />
           <Route path="/" component={LinkIndex} />
         </Switch>
       </div>
