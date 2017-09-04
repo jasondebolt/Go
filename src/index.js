@@ -10,23 +10,9 @@ import reducers from './reducers';
 import Header from './components/header';
 import LinkIndex from './components/links_index';
 import LinksNew from './components/links_new';
-import LinksShow from './components/links_edit';
-
+import LinksEdit from './components/links_edit';
 
 const createStoreWithMiddleware = applyMiddleware(promise)(createStore);
-
-
-class Hello extends Component {
-  render() {
-    return <div> Hello </div>;
-  }
-}
-
-class Goodbye extends Component {
-  render() {
-    return <div> Goodbye </div>;
-  }
-}
 
 ReactDOM.render(
   <Provider store={createStoreWithMiddleware(reducers)}>
@@ -34,14 +20,13 @@ ReactDOM.render(
       <div>
         <Header />
         <Switch> {/* Don't  forget the Capital S Switch statement!!! */}
-          <Route path="/links/new" component={LinksNew} />
           {/* this would work too:
             <Route path="/links/new" component={LinksNew} />
             {/* this would work too:
-            <Route path="/links/:id/:comment" component ...
+            <Route path="/links/:alias/:comment" component ...
             params are accessible in the components via 'this.props.match.params.id'
           */}
-          <Route path="/links/:alias" component={LinksShow} />
+          <Route path="/links/:alias" component={LinksEdit} />
           <Route path="/" component={LinkIndex} />
         </Switch>
       </div>

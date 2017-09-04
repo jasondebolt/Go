@@ -49,9 +49,10 @@ export function fetchLink(alias) {
   }
 }
 
-export function deleteLink(alias, callback) {
-  const request = axios.delete(`${ROOT_URL}/links/${alias}`).then(
-    () => callback());
+export function deleteLink(alias, successCallback, errorCallback) {
+  const request = axios.delete(`${ROOT_URL}/links/${alias}`)
+    .then((response) => successCallback(response))
+    .catch((response) => errorCallback(response))
 
   return {
     type: DELETE_LINK,

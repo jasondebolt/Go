@@ -5,9 +5,16 @@ import { connect } from 'react-redux';
 // We don't need to specify index.js, since that is looked up by default.
 // See https://nodejs.org/dist/latest-v7.x/docs/api/modules.html#modules_folders_as_modules
 import { putLink, fetchLinks, fetchContext } from '../actions';
+import { ErrorMessage } from './messages';
 
 
 class LinksNew extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      'unauthorized_error': false
+    }
+  }
 
   renderField(field) {
     //console.log(field.foo)
@@ -42,15 +49,19 @@ class LinksNew extends Component {
     )
   }
 
-  onSubmit(values) {
-    //console.log(values);
-    //console.log(this.props);
+  handleFormSubmit(formProps) {
     // this.props.history.push('/'); --> May return us to main page before link is created. Not ideal.
-    this.props.putLink(values, () => {
-      this.props.reset()
-      this.props.fetchLinks()
-      //this.props.history.push('/');
-    })
+    this.props.putLink(formProps,
+      (successResponse) => {
+        //this.props.reset()
+        this.props.reset()
+        this.props.fetchLinks()
+        this.setState({'unauthorized_error': false})
+      },
+      (errorResponse) => {
+        this.setState({'unauthorized_error': true})
+      }
+    )
   }
 
   render() {
@@ -61,7 +72,7 @@ class LinksNew extends Component {
     const { handleSubmit } = this.props;
     return (
       <div className="ui segments">
-        <form className="ui segment huge form" onSubmit={handleSubmit(this.onSubmit.bind(this))}>
+        <form className="ui segment huge form" onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
           {/*
             You can pass arbitrary values to the Field object and they will
             be accessible in the component as an attribute of the 'field' object
@@ -69,13 +80,11 @@ class LinksNew extends Component {
             above.
           */}
           <Field
-            foo="FOO TITLE"
             label="Alias"
             name="alias"
             component={this.renderField}
           />
           <Field
-            foo="FOO CATEGORIES"
             label="Url"
             name="url"
             component={this.renderField}
@@ -86,6 +95,14 @@ class LinksNew extends Component {
           */}
           <Link to="/" className="ui blue button">Cancel</Link>
         </form>
+        {
+          this.state.unauthorized_error
+            ? <ErrorMessage
+              header="Sorry, this link already exists.  "
+              body="Only this link owner can change this link."
+              />
+            : null
+        }
       </div>
       )
     }

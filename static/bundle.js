@@ -53,8 +53,6 @@
 
 	'use strict';
 
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 	var _react = __webpack_require__(2);
 
 	var _react2 = _interopRequireDefault(_react);
@@ -91,65 +89,13 @@
 
 	var _links_new2 = _interopRequireDefault(_links_new);
 
-	var _links_edit = __webpack_require__(556);
+	var _links_edit = __webpack_require__(555);
 
 	var _links_edit2 = _interopRequireDefault(_links_edit);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
 	var createStoreWithMiddleware = (0, _redux.applyMiddleware)(_reduxPromise2.default)(_redux.createStore);
-
-	var Hello = function (_Component) {
-	  _inherits(Hello, _Component);
-
-	  function Hello() {
-	    _classCallCheck(this, Hello);
-
-	    return _possibleConstructorReturn(this, (Hello.__proto__ || Object.getPrototypeOf(Hello)).apply(this, arguments));
-	  }
-
-	  _createClass(Hello, [{
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'div',
-	        null,
-	        ' Hello '
-	      );
-	    }
-	  }]);
-
-	  return Hello;
-	}(_react.Component);
-
-	var Goodbye = function (_Component2) {
-	  _inherits(Goodbye, _Component2);
-
-	  function Goodbye() {
-	    _classCallCheck(this, Goodbye);
-
-	    return _possibleConstructorReturn(this, (Goodbye.__proto__ || Object.getPrototypeOf(Goodbye)).apply(this, arguments));
-	  }
-
-	  _createClass(Goodbye, [{
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'div',
-	        null,
-	        ' Goodbye '
-	      );
-	    }
-	  }]);
-
-	  return Goodbye;
-	}(_react.Component);
 
 	_reactDom2.default.render(_react2.default.createElement(
 	  _reactRedux.Provider,
@@ -165,7 +111,6 @@
 	        _reactRouterDom.Switch,
 	        null,
 	        ' ',
-	        _react2.default.createElement(_reactRouterDom.Route, { path: '/links/new', component: _links_new2.default }),
 	        _react2.default.createElement(_reactRouterDom.Route, { path: '/links/:alias', component: _links_edit2.default }),
 	        _react2.default.createElement(_reactRouterDom.Route, { path: '/', component: _links_index2.default })
 	      )
@@ -41201,9 +41146,11 @@
 	  };
 	}
 
-	function deleteLink(alias, callback) {
-	  var request = _axios2.default.delete(ROOT_URL + '/links/' + alias).then(function () {
-	    return callback();
+	function deleteLink(alias, successCallback, errorCallback) {
+	  var request = _axios2.default.delete(ROOT_URL + '/links/' + alias).then(function (response) {
+	    return successCallback(response);
+	  }).catch(function (response) {
+	    return errorCallback(response);
 	  });
 
 	  return {
@@ -55339,42 +55286,34 @@
 	        { className: 'ui grid' },
 	        _react2.default.createElement(
 	          'div',
-	          { className: 'row' },
+	          { className: 'sixteen wide column' },
+	          _react2.default.createElement(
+	            'h2',
+	            { className: 'ui header' },
+	            'Create a link'
+	          ),
 	          _react2.default.createElement(
 	            'div',
-	            { className: 'sixteen wide column' },
+	            { className: 'ui grid' },
 	            _react2.default.createElement(
 	              'div',
-	              { className: 'ui grid' },
-	              _react2.default.createElement(
-	                'div',
-	                { className: 'ten wide column centered' },
-	                _react2.default.createElement(
-	                  'div',
-	                  { className: 'ui segment' },
-	                  _react2.default.createElement(
-	                    'h4',
-	                    null,
-	                    'Create a Link'
-	                  ),
-	                  _react2.default.createElement(_links_new2.default, null)
-	                )
-	              )
-	            ),
-	            _react2.default.createElement('br', null),
+	              { className: 'wide column centered' },
+	              _react2.default.createElement(_links_new2.default, null)
+	            )
+	          ),
+	          _react2.default.createElement('br', null),
+	          _react2.default.createElement(
+	            'h2',
+	            { className: 'ui header' },
+	            'Links'
+	          ),
+	          _react2.default.createElement(
+	            'table',
+	            { className: 'ui celled table' },
 	            _react2.default.createElement(
-	              'h4',
+	              'tbody',
 	              null,
-	              'Links'
-	            ),
-	            _react2.default.createElement(
-	              'table',
-	              { className: 'ui celled table' },
-	              _react2.default.createElement(
-	                'tbody',
-	                null,
-	                this.renderLinks()
-	              )
+	              this.renderLinks()
 	            )
 	          )
 	        )
@@ -55420,6 +55359,8 @@
 
 	var _actions = __webpack_require__(523);
 
+	var _messages = __webpack_require__(556);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -55434,10 +55375,15 @@
 	var LinksNew = function (_Component) {
 	  _inherits(LinksNew, _Component);
 
-	  function LinksNew() {
+	  function LinksNew(props) {
 	    _classCallCheck(this, LinksNew);
 
-	    return _possibleConstructorReturn(this, (LinksNew.__proto__ || Object.getPrototypeOf(LinksNew)).apply(this, arguments));
+	    var _this = _possibleConstructorReturn(this, (LinksNew.__proto__ || Object.getPrototypeOf(LinksNew)).call(this, props));
+
+	    _this.state = {
+	      'unauthorized_error': false
+	    };
+	    return _this;
 	  }
 
 	  _createClass(LinksNew, [{
@@ -55463,17 +55409,18 @@
 	      );
 	    }
 	  }, {
-	    key: 'onSubmit',
-	    value: function onSubmit(values) {
+	    key: 'handleFormSubmit',
+	    value: function handleFormSubmit(formProps) {
 	      var _this2 = this;
 
-	      //console.log(values);
-	      //console.log(this.props);
 	      // this.props.history.push('/'); --> May return us to main page before link is created. Not ideal.
-	      this.props.putLink(values, function () {
+	      this.props.putLink(formProps, function (successResponse) {
+	        //this.props.reset()
 	        _this2.props.reset();
 	        _this2.props.fetchLinks();
-	        //this.props.history.push('/');
+	        _this2.setState({ 'unauthorized_error': false });
+	      }, function (errorResponse) {
+	        _this2.setState({ 'unauthorized_error': true });
 	      });
 	    }
 	  }, {
@@ -55494,15 +55441,13 @@
 	        { className: 'ui segments' },
 	        _react2.default.createElement(
 	          'form',
-	          { className: 'ui segment huge form', onSubmit: handleSubmit(this.onSubmit.bind(this)) },
+	          { className: 'ui segment huge form', onSubmit: handleSubmit(this.handleFormSubmit.bind(this)) },
 	          _react2.default.createElement(_reduxForm.Field, {
-	            foo: 'FOO TITLE',
 	            label: 'Alias',
 	            name: 'alias',
 	            component: this.renderField
 	          }),
 	          _react2.default.createElement(_reduxForm.Field, {
-	            foo: 'FOO CATEGORIES',
 	            label: 'Url',
 	            name: 'url',
 	            component: this.renderField
@@ -55517,7 +55462,11 @@
 	            { to: '/', className: 'ui blue button' },
 	            'Cancel'
 	          )
-	        )
+	        ),
+	        this.state.unauthorized_error ? _react2.default.createElement(_messages.ErrorMessage, {
+	          header: 'Sorry, this link already exists.  ',
+	          body: 'Only this link owner can change this link.'
+	        }) : null
 	      );
 	    }
 	  }]);
@@ -55561,8 +55510,7 @@
 	})((0, _reactRedux.connect)(mapStateToProps, { putLink: _actions.putLink, fetchLinks: _actions.fetchLinks, fetchContext: _actions.fetchContext })(LinksNew));
 
 /***/ }),
-/* 555 */,
-/* 556 */
+/* 555 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55587,6 +55535,8 @@
 
 	var _reactRouterDom = __webpack_require__(216);
 
+	var _messages = __webpack_require__(556);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -55594,26 +55544,6 @@
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var ErrorMessage = function ErrorMessage(_ref) {
-	  var header = _ref.header,
-	      body = _ref.body;
-	  return _react2.default.createElement(
-	    'div',
-	    { className: 'ui negative message' },
-	    _react2.default.createElement('i', { className: 'close icon' }),
-	    _react2.default.createElement(
-	      'div',
-	      { className: 'header' },
-	      header
-	    ),
-	    _react2.default.createElement(
-	      'p',
-	      null,
-	      body
-	    )
-	  );
-	};
 
 	var LinksShow = function (_Component) {
 	  _inherits(LinksShow, _Component);
@@ -55666,8 +55596,10 @@
 	      // Pull the id from the URL.
 	      var alias = this.props.match.params.alias; // Provided to us by react-router
 
-	      this.props.deleteLink(alias, function () {
+	      this.props.deleteLink(alias, function (successResponse) {
 	        _this2.props.history.push('/');
+	      }, function (errorResponse) {
+	        _this2.setState({ 'unauthorized_error': true });
 	      });
 	    }
 	  }, {
@@ -55689,59 +55621,67 @@
 
 	      return _react2.default.createElement(
 	        'div',
-	        null,
+	        { className: 'ui grid' },
 	        _react2.default.createElement(
 	          'div',
-	          null,
+	          { className: 'sixteen wide column' },
 	          _react2.default.createElement(
-	            _reactRouterDom.Link,
-	            { to: '/' },
-	            'Back To Index'
-	          )
-	        ),
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'ui segments' },
+	            'h2',
+	            { className: 'ui header' },
+	            'Update or delete a link'
+	          ),
 	          _react2.default.createElement(
-	            'form',
-	            { className: 'ui segment huge form', onSubmit: handleSubmit(this.handleFormSubmit.bind(this)) },
-	            _react2.default.createElement(_reduxForm.Field, {
-	              label: 'Alias',
-	              name: 'alias',
-	              component: this.renderField
-	            }),
-	            _react2.default.createElement(_reduxForm.Field, {
-	              label: 'Url',
-	              name: 'url',
-	              component: this.renderField
-	            }),
-	            _react2.default.createElement(_reduxForm.Field, {
-	              label: 'Owner',
-	              name: 'owner',
-	              component: this.renderField
-	            }),
+	            'div',
+	            { className: 'ui grid' },
 	            _react2.default.createElement(
-	              'button',
-	              { type: 'submit', className: 'ui green button' },
-	              'Submit'
-	            ),
-	            _react2.default.createElement(
-	              _reactRouterDom.Link,
-	              { to: '/', className: 'ui blue button' },
-	              'Cancel'
-	            ),
-	            _react2.default.createElement(
-	              _reactRouterDom.Link,
-	              { to: '/', className: 'ui button red',
-	                onClick: this.onDeleteClick.bind(this) },
-	              ' Delete Link '
+	              'div',
+	              { className: 'wide column centered' },
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'ui segments' },
+	                _react2.default.createElement(
+	                  'form',
+	                  { className: 'ui segment huge form', onSubmit: handleSubmit(this.handleFormSubmit.bind(this)) },
+	                  _react2.default.createElement(_reduxForm.Field, {
+	                    label: 'Alias',
+	                    name: 'alias',
+	                    component: this.renderField
+	                  }),
+	                  _react2.default.createElement(_reduxForm.Field, {
+	                    label: 'Url',
+	                    name: 'url',
+	                    component: this.renderField
+	                  }),
+	                  _react2.default.createElement(_reduxForm.Field, {
+	                    label: 'Owner',
+	                    name: 'owner',
+	                    component: this.renderField
+	                  }),
+	                  _react2.default.createElement(
+	                    'button',
+	                    { type: 'submit', className: 'ui green button' },
+	                    'Submit'
+	                  ),
+	                  _react2.default.createElement(
+	                    _reactRouterDom.Link,
+	                    { to: '/', className: 'ui blue button' },
+	                    'Cancel'
+	                  ),
+	                  _react2.default.createElement(
+	                    _reactRouterDom.Link,
+	                    { to: '/', className: 'ui button red',
+	                      onClick: handleSubmit(this.onDeleteClick.bind(this)) },
+	                    'Delete'
+	                  )
+	                )
+	              ),
+	              this.state.unauthorized_error ? _react2.default.createElement(_messages.ErrorMessage, {
+	                header: 'Sorry, you do not own this link.',
+	                body: 'Only this link owner can change this link.'
+	              }) : null
 	            )
 	          )
-	        ),
-	        this.state.unauthorized_error ? _react2.default.createElement(ErrorMessage, {
-	          header: 'Sorry, you do not own this link.',
-	          body: 'Only this link owner can change this link.'
-	        }) : null
+	        )
 	      );
 	    }
 	  }, {
@@ -55807,9 +55747,9 @@
 	// But there IS a second argument, which we call 'ownProps'.
 	// ownProps is props object that is headed to the LinksShow component.
 	// So, 'this.props' in the component is ABSOLUTELY EQUAL TO (===) ownProps.
-	function mapStateToProps(_ref2, ownProps) {
-	  var links = _ref2.links,
-	      context = _ref2.context;
+	function mapStateToProps(_ref, ownProps) {
+	  var links = _ref.links,
+	      context = _ref.context;
 
 	  // return { links } or { links: links }// This is dumb way.
 	  return {
@@ -55822,6 +55762,43 @@
 	  validate: validate,
 	  form: 'LinksUpdateForm'
 	})((0, _reactRedux.connect)(mapStateToProps, { putLink: _actions.putLink, fetchLink: _actions.fetchLink, fetchLinks: _actions.fetchLinks, deleteLink: _actions.deleteLink, fetchContext: _actions.fetchContext })(LinksShow));
+
+/***/ }),
+/* 556 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.ErrorMessage = undefined;
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var ErrorMessage = exports.ErrorMessage = function ErrorMessage(_ref) {
+	  var header = _ref.header,
+	      body = _ref.body;
+	  return _react2.default.createElement(
+	    "div",
+	    { className: "ui negative message" },
+	    _react2.default.createElement("i", { className: "close icon" }),
+	    _react2.default.createElement(
+	      "div",
+	      { className: "header" },
+	      header
+	    ),
+	    _react2.default.createElement(
+	      "p",
+	      null,
+	      body
+	    )
+	  );
+	};
 
 /***/ })
 /******/ ]);

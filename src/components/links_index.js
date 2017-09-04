@@ -28,24 +28,20 @@ class LinkIndex extends Component {
   render() {
     return (
       <div className="ui grid">
-        <div className="row">
-          <div className="sixteen wide column">
-            <div className="ui grid">
-              <div className="ten wide column centered">
-                <div className="ui segment">
-                  <h4>Create a Link</h4>
-                  <LinksNew />
-                </div>
-              </div>
+        <div className="sixteen wide column">
+          <h2 className="ui header">Create a link</h2>
+          <div className="ui grid">
+            <div className="wide column centered">
+              <LinksNew />
             </div>
-            <br />
-            <h4>Links</h4>
-            <table className="ui celled table">
-              <tbody>
-                {this.renderLinks()}
-              </tbody>
-            </table>
           </div>
+          <br />
+          <h2 className="ui header">Links</h2>
+          <table className="ui celled table">
+            <tbody>
+              {this.renderLinks()}
+            </tbody>
+          </table>
         </div>
       </div>
     );

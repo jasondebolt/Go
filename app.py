@@ -86,6 +86,15 @@ def links():
 
 @app.route('/api/links/<alias>', methods=['DELETE'])
 def delete_link(alias):
+    ddb_response = MO_ENTRIES_TABLE.get_item(
+        Key={
+            'alias': alias
+        }
+    )
+    item = ddb_response.get('Item')
+    if item:
+        if item['owner'] != session['user']:
+            return ('Only link owners can delete their links', 401)
     response = MO_ENTRIES_TABLE.delete_item(
         Key={
             'alias': alias

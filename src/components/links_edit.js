@@ -3,18 +3,7 @@ import { connect } from 'react-redux';
 import { Field, reduxForm, initialize } from 'redux-form';
 import { putLink, fetchLink, fetchLinks, deleteLink, fetchContext } from '../actions';
 import { Link } from 'react-router-dom';
-
-const ErrorMessage = ({header, body}) => (
-  <div className="ui negative message">
-    <i className="close icon"></i>
-    <div className="header">
-      {header}
-    </div>
-    <p>
-      {body}
-    </p>
-  </div>
-)
+import { ErrorMessage } from './messages';
 
 class LinksShow extends Component {
   constructor(props) {
@@ -52,9 +41,14 @@ class LinksShow extends Component {
   onDeleteClick() {
     // Pull the id from the URL.
     const { alias } = this.props.match.params; // Provided to us by react-router
-    this.props.deleteLink(alias, () => {
-      this.props.history.push('/');
-    });
+    this.props.deleteLink(alias,
+      (successResponse) => {
+        this.props.history.push('/');
+      },
+      (errorResponse) => {
+        this.setState({'unauthorized_error': true})
+      }
+    )
   }
 
   render() {
@@ -68,52 +62,56 @@ class LinksShow extends Component {
     const className = `field ${this.state.unauthorized_error ? 'error': ''}`;
 
     return (
-      <div>
-        <div>
-          <Link to="/">Back To Index</Link>
+      <div className="ui grid">
+        <div className="sixteen wide column">
+          <h2 className="ui header">Update or delete a link</h2>
+          <div className="ui grid">
+            <div className="wide column centered">
+              <div className="ui segments">
+                <form className="ui segment huge form" onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+                  {/*
+                    You can pass arbitrary values to the Field object and they will
+                    be accessible in the component as an attribute of the 'field' object
+                    within the component. See how {field.label} is used in 'renderField'
+                    above.
+                  */}
+                  <Field
+                    label="Alias"
+                    name="alias"
+                    component={this.renderField}
+                  />
+                  <Field
+                    label="Url"
+                    name="url"
+                    component={this.renderField}
+                  />
+                  <Field
+                    label="Owner"
+                    name="owner"
+                    component={this.renderField}
+                  />
+                  <button type="submit" className="ui green button">Submit</button>
+                  {/*
+                    Link tags actually do show up as anchor tags (see style.css file)
+                  */}
+                  <Link to="/" className="ui blue button">Cancel</Link>
+                  <Link to="/" className="ui button red"
+                    onClick={handleSubmit(this.onDeleteClick.bind(this))}>Delete</Link>
+                </form>
+              </div>
+              {
+                this.state.unauthorized_error
+                  ? <ErrorMessage
+                    header="Sorry, you do not own this link."
+                    body="Only this link owner can change this link."
+                    />
+                  : null
+              }
+            </div>
+          </div>
         </div>
-        <div className="ui segments">
-          <form className="ui segment huge form" onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
-            {/*
-              You can pass arbitrary values to the Field object and they will
-              be accessible in the component as an attribute of the 'field' object
-              within the component. See how {field.label} is used in 'renderField'
-              above.
-            */}
-            <Field
-              label="Alias"
-              name="alias"
-              component={this.renderField}
-            />
-            <Field
-              label="Url"
-              name="url"
-              component={this.renderField}
-            />
-            <Field
-              label="Owner"
-              name="owner"
-              component={this.renderField}
-            />
-            <button type="submit" className="ui green button">Submit</button>
-            {/*
-              Link tags actually do show up as anchor tags (see style.css file)
-            */}
-            <Link to="/" className="ui blue button">Cancel</Link>
-            <Link to="/" className="ui button red"
-              onClick={this.onDeleteClick.bind(this)}> Delete Link </Link>
-          </form>
-        </div>
-        {
-          this.state.unauthorized_error
-            ? <ErrorMessage
-              header="Sorry, you do not own this link."
-              body="Only this link owner can change this link."
-              />
-            : null
-        }
       </div>
-    )
+      )
   }
 
   renderField(field) {
