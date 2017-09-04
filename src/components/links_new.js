@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 // We don't need to specify index.js, since that is looked up by default.
 // See https://nodejs.org/dist/latest-v7.x/docs/api/modules.html#modules_folders_as_modules
-import { createLink, fetchLinks } from '../actions';
+import { putLink, fetchLinks, fetchContext } from '../actions';
 
 
 class LinksNew extends Component {
@@ -46,7 +46,7 @@ class LinksNew extends Component {
     //console.log(values);
     //console.log(this.props);
     // this.props.history.push('/'); --> May return us to main page before link is created. Not ideal.
-    this.props.createLink(values, () => {
+    this.props.putLink(values, () => {
       this.props.reset()
       this.props.fetchLinks()
       //this.props.history.push('/');
@@ -55,6 +55,9 @@ class LinksNew extends Component {
 
   render() {
     // Pull on the handleSubmit function that we get from reduxForm.
+    if (!this.props.context) {
+      return <div>Loading...</div>
+    }
     const { handleSubmit } = this.props;
     return (
       <div className="ui segments">
@@ -114,8 +117,11 @@ function validate(values) {
 //  form: 'LinksNewForm'
 //})(LinksNew)
 
-// NEW VERSION
+function mapStateToProps(state) {
+  return { context: state.context };
+}
+
 export default reduxForm({
   validate,
   form: 'LinksNewForm'
-})(connect(null, { createLink, fetchLinks })(LinksNew));
+})(connect(mapStateToProps, { putLink, fetchLinks, fetchContext })(LinksNew));

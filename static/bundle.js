@@ -79,25 +79,21 @@
 
 	var _reducers2 = _interopRequireDefault(_reducers);
 
-	var _header = __webpack_require__(557);
+	var _header = __webpack_require__(552);
 
 	var _header2 = _interopRequireDefault(_header);
 
-	var _links_index = __webpack_require__(551);
+	var _links_index = __webpack_require__(553);
 
 	var _links_index2 = _interopRequireDefault(_links_index);
 
-	var _links_new = __webpack_require__(552);
+	var _links_new = __webpack_require__(554);
 
 	var _links_new2 = _interopRequireDefault(_links_new);
 
-	var _links_update = __webpack_require__(556);
+	var _links_edit = __webpack_require__(556);
 
-	var _links_update2 = _interopRequireDefault(_links_update);
-
-	var _links_show = __webpack_require__(553);
-
-	var _links_show2 = _interopRequireDefault(_links_show);
+	var _links_edit2 = _interopRequireDefault(_links_edit);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -170,8 +166,7 @@
 	        null,
 	        ' ',
 	        _react2.default.createElement(_reactRouterDom.Route, { path: '/links/new', component: _links_new2.default }),
-	        _react2.default.createElement(_reactRouterDom.Route, { path: '/links/update', component: _links_update2.default }),
-	        _react2.default.createElement(_reactRouterDom.Route, { path: '/links/:alias', component: _links_show2.default }),
+	        _react2.default.createElement(_reactRouterDom.Route, { path: '/links/:alias', component: _links_edit2.default }),
 	        _react2.default.createElement(_reactRouterDom.Route, { path: '/', component: _links_index2.default })
 	      )
 	    )
@@ -28959,11 +28954,16 @@
 
 	var _reducer_links2 = _interopRequireDefault(_reducer_links);
 
+	var _reducer_context = __webpack_require__(551);
+
+	var _reducer_context2 = _interopRequireDefault(_reducer_context);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var rootReducer = (0, _redux.combineReducers)({
 	  links: _reducer_links2.default,
-	  form: _reduxForm.reducer
+	  form: _reduxForm.reducer,
+	  context: _reducer_context2.default
 	});
 
 	exports.default = rootReducer;
@@ -41077,7 +41077,7 @@
 	*/
 
 
-	// We don't have a case for the CREATE_LINK action because
+	// We don't have a case for the PUT_LINK action because
 	// for that action we use another promise with a callback to automatically
 	// redirect back to the main page after the ajax promise is resolved.
 	// When the main page is hit, react router renders LinkIndex.
@@ -41136,9 +41136,10 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.DELETE_LINK = exports.FETCH_LINK = exports.CREATE_LINK = exports.FETCH_LINKS = undefined;
+	exports.DELETE_LINK = exports.FETCH_LINK = exports.PUT_LINK = exports.FETCH_LINKS = exports.FETCH_CONTEXT = undefined;
+	exports.fetchContext = fetchContext;
 	exports.fetchLinks = fetchLinks;
-	exports.createLink = createLink;
+	exports.putLink = putLink;
 	exports.fetchLink = fetchLink;
 	exports.deleteLink = deleteLink;
 
@@ -41148,13 +41149,22 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	var FETCH_CONTEXT = exports.FETCH_CONTEXT = 'fetch_context';
 	var FETCH_LINKS = exports.FETCH_LINKS = 'fetch_links';
-	var CREATE_LINK = exports.CREATE_LINK = 'create_link';
+	var PUT_LINK = exports.PUT_LINK = 'put_link';
 	var FETCH_LINK = exports.FETCH_LINK = 'fetch_link';
 	var DELETE_LINK = exports.DELETE_LINK = 'delete_link';
 
 	//const ROOT_URL = 'http://reduxblog.herokuapp.com/api'
 	var ROOT_URL = '/api';
+
+	function fetchContext() {
+	  var request = _axios2.default.get(ROOT_URL + '/context');
+	  return {
+	    type: FETCH_CONTEXT,
+	    payload: request
+	  };
+	}
 
 	function fetchLinks() {
 	  var request = _axios2.default.get(ROOT_URL + '/links');
@@ -41164,18 +41174,20 @@
 	  };
 	}
 
-	function createLink(values, callback) {
+	function putLink(values, successCallback, errorCallback) {
 	  // OLD VERSION
 	  //const request = axios.post(`${ROOT_URL}/links${API_KEY}`, values);
 
 	  // new version will callback which contains promise to back back to main page
 	  // after request axios promise is resolved.
-	  var request = _axios2.default.put(ROOT_URL + '/links', values).then(function () {
-	    return callback();
+	  var request = _axios2.default.put(ROOT_URL + '/links', values).then(function (response) {
+	    return successCallback(response);
+	  }).catch(function (response) {
+	    return errorCallback(response);
 	  });
 
 	  return {
-	    type: CREATE_LINK,
+	    type: PUT_LINK,
 	    payload: request
 	  };
 	}
@@ -55097,6 +55109,150 @@
 	  value: true
 	});
 
+	exports.default = function () {
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+	  var action = arguments[1];
+
+	  // Ultimately, we need to return some kind of object here.
+	  switch (action.type) {
+	    case _actions.FETCH_CONTEXT:
+	      var context = action.payload.data;
+	      return context;
+	    default:
+	      return state;
+	  }
+	};
+
+	var _actions = __webpack_require__(523);
+
+	var _lodash = __webpack_require__(550);
+
+	var _lodash2 = _interopRequireDefault(_lodash);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/***/ }),
+/* 552 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRouterDom = __webpack_require__(216);
+
+	var _reactRedux = __webpack_require__(160);
+
+	var _actions = __webpack_require__(523);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	//import axios from 'axios';
+
+	var Header = function (_Component) {
+	  _inherits(Header, _Component);
+
+	  function Header() {
+	    _classCallCheck(this, Header);
+
+	    return _possibleConstructorReturn(this, (Header.__proto__ || Object.getPrototypeOf(Header)).apply(this, arguments));
+	  }
+
+	  _createClass(Header, [{
+	    key: 'componentDidMount',
+
+	    //constructor(props) {
+	    //  super(props);
+	    //  this.state = {'user': ''}
+	    //}
+
+	    value: function componentDidMount() {
+	      this.props.fetchContext();
+	      //axios.get(`/api/context`).then(response => {
+	      //  const user = response.data.user
+	      //  console.log(response)
+	      //  console.log(response.data.user)
+	      //  this.setState({'user': user})
+	      //});
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      if (!this.props.context) {
+	        return _react2.default.createElement(
+	          'div',
+	          null,
+	          'Loading...'
+	        );
+	      }
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'ui fixed inverted menu' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'ui container' },
+	          _react2.default.createElement(
+	            'a',
+	            { href: '#', className: 'header item' },
+	            _react2.default.createElement('img', { className: 'logo ui image', src: '/static/logo.png' })
+	          ),
+	          _react2.default.createElement(
+	            _reactRouterDom.Link,
+	            { className: 'header item', to: '/links' },
+	            ' Go '
+	          ),
+	          _react2.default.createElement(
+	            'a',
+	            { href: '/logout', className: 'header item' },
+	            'Logout'
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'header item right' },
+	            ' Welcome, \xA0 ',
+	            this.props.context.user,
+	            ' '
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return Header;
+	}(_react.Component);
+
+	//export default Header;
+
+	function mapStateToProps(state) {
+	  return { context: state.context };
+	}
+
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, { fetchContext: _actions.fetchContext })(Header);
+
+/***/ }),
+/* 553 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _react = __webpack_require__(2);
@@ -55109,7 +55265,7 @@
 
 	var _reactRouterDom = __webpack_require__(216);
 
-	var _links_new = __webpack_require__(552);
+	var _links_new = __webpack_require__(554);
 
 	var _links_new2 = _interopRequireDefault(_links_new);
 
@@ -55239,7 +55395,7 @@
 	// The above is identical to using mapDispatchToProps.
 
 /***/ }),
-/* 552 */
+/* 554 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55314,7 +55470,7 @@
 	      //console.log(values);
 	      //console.log(this.props);
 	      // this.props.history.push('/'); --> May return us to main page before link is created. Not ideal.
-	      this.props.createLink(values, function () {
+	      this.props.putLink(values, function () {
 	        _this2.props.reset();
 	        _this2.props.fetchLinks();
 	        //this.props.history.push('/');
@@ -55324,6 +55480,13 @@
 	    key: 'render',
 	    value: function render() {
 	      // Pull on the handleSubmit function that we get from reduxForm.
+	      if (!this.props.context) {
+	        return _react2.default.createElement(
+	          'div',
+	          null,
+	          'Loading...'
+	        );
+	      }
 	      var handleSubmit = this.props.handleSubmit;
 
 	      return _react2.default.createElement(
@@ -55388,160 +55551,16 @@
 	//  form: 'LinksNewForm'
 	//})(LinksNew)
 
-	// NEW VERSION
+	function mapStateToProps(state) {
+	  return { context: state.context };
+	}
+
 	exports.default = (0, _reduxForm.reduxForm)({
 	  validate: validate,
 	  form: 'LinksNewForm'
-	})((0, _reactRedux.connect)(null, { createLink: _actions.createLink, fetchLinks: _actions.fetchLinks })(LinksNew));
+	})((0, _reactRedux.connect)(mapStateToProps, { putLink: _actions.putLink, fetchLinks: _actions.fetchLinks, fetchContext: _actions.fetchContext })(LinksNew));
 
 /***/ }),
-/* 553 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(2);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _reactRedux = __webpack_require__(160);
-
-	var _actions = __webpack_require__(523);
-
-	var _reactRouterDom = __webpack_require__(216);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var LinksShow = function (_Component) {
-	  _inherits(LinksShow, _Component);
-
-	  function LinksShow() {
-	    _classCallCheck(this, LinksShow);
-
-	    return _possibleConstructorReturn(this, (LinksShow.__proto__ || Object.getPrototypeOf(LinksShow)).apply(this, arguments));
-	  }
-
-	  _createClass(LinksShow, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      // If we really care about network performance and we don't want to fetch
-	      // the 'same' link twice, you can do this:
-	      //    if (!this.props.link) {
-	      //      const { id } = this.props.match.params; // Provided to us by react-router
-	      //     this.props.fetchLink(id);
-	      //    }
-	      // However, it's probably better to play it safe a re-fetch because
-	      // the user may have been sitting at this page for a long time.
-	      var alias = this.props.match.params.alias; // Provided to us by react-router
-
-	      this.props.fetchLink(alias);
-	    }
-	  }, {
-	    key: 'onDeleteClick',
-	    value: function onDeleteClick() {
-	      var _this2 = this;
-
-	      // Pull the id from the URL.
-	      var alias = this.props.match.params.alias; // Provided to us by react-router
-
-	      this.props.deleteLink(alias, function () {
-	        _this2.props.history.push('/');
-	      });
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      {/*
-	         We would have just returned all { links } from mapStateToProps, and then in
-	         this function we would have used links[this.props.match.params.id], but
-	         that wouldn't have been as clean and the component wouldn't have been
-	         very reusable. It would also expose LinksShow to a huge object as a
-	         dependency. However, this component only really cares about ONE particular
-	         link, so why should we pass it an entire list of links??
-	         Also, many times mapStateToProps function is stored in a separate file.
-	         Doing so would make this file/component even more reusable.
-	        */}
-	      var link = this.props.link;
-
-
-	      if (!link) {
-	        // We need this because this component will probably render long before
-	        // the axios request is resolved and the action > reducer > component
-	        // flow kicks off.
-	        return _react2.default.createElement(
-	          'div',
-	          null,
-	          'Loading...'
-	        );
-	      }
-
-	      return _react2.default.createElement(
-	        'div',
-	        null,
-	        _react2.default.createElement(
-	          _reactRouterDom.Link,
-	          { to: '/' },
-	          'Back To Index'
-	        ),
-	        _react2.default.createElement(
-	          'button',
-	          {
-	            className: 'ui red button right floated column',
-	            onClick: this.onDeleteClick.bind(this)
-	          },
-	          'Delete Link'
-	        ),
-	        _react2.default.createElement(
-	          'h3',
-	          null,
-	          link.alias
-	        ),
-	        _react2.default.createElement(
-	          'h6',
-	          null,
-	          'Url: ',
-	          link.url
-	        )
-	      );
-	    }
-	  }]);
-
-	  return LinksShow;
-	}(_react.Component);
-
-	// First argument to mapStateToProps is always are application state.
-	// But there IS a second argument, which we call 'ownProps'.
-	// ownProps is props object that is headed to the LinksShow component.
-	// So, 'this.props' in the component is ABSOLUTELY EQUAL TO (===) ownProps.
-
-
-	function mapStateToProps(_ref, ownProps) {
-	  var links = _ref.links;
-
-	  // return { links } or { links: links }// This is dumb way.
-	  return { link: links[ownProps.match.params.alias] // This smart way.
-	    // Thus, you can use mapStateToProps not just to pull off peices of state,
-	    // but you can also do some intermediate logic in them.
-	  };
-	}
-
-	//export default LinksShow;
-	exports.default = (0, _reactRedux.connect)(mapStateToProps, { fetchLink: _actions.fetchLink, deleteLink: _actions.deleteLink })(LinksShow);
-
-/***/ }),
-/* 554 */,
 /* 555 */,
 /* 556 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -55560,13 +55579,13 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reduxForm = __webpack_require__(280);
-
-	var _reactRouterDom = __webpack_require__(216);
-
 	var _reactRedux = __webpack_require__(160);
 
+	var _reduxForm = __webpack_require__(280);
+
 	var _actions = __webpack_require__(523);
+
+	var _reactRouterDom = __webpack_require__(216);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -55575,20 +55594,157 @@
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	// We don't need to specify index.js, since that is looked up by default.
-	// See https://nodejs.org/dist/latest-v7.x/docs/api/modules.html#modules_folders_as_modules
 
+	var ErrorMessage = function ErrorMessage(_ref) {
+	  var header = _ref.header,
+	      body = _ref.body;
+	  return _react2.default.createElement(
+	    'div',
+	    { className: 'ui negative message' },
+	    _react2.default.createElement('i', { className: 'close icon' }),
+	    _react2.default.createElement(
+	      'div',
+	      { className: 'header' },
+	      header
+	    ),
+	    _react2.default.createElement(
+	      'p',
+	      null,
+	      body
+	    )
+	  );
+	};
 
-	var LinksUpdate = function (_Component) {
-	  _inherits(LinksUpdate, _Component);
+	var LinksShow = function (_Component) {
+	  _inherits(LinksShow, _Component);
 
-	  function LinksUpdate() {
-	    _classCallCheck(this, LinksUpdate);
+	  function LinksShow(props) {
+	    _classCallCheck(this, LinksShow);
 
-	    return _possibleConstructorReturn(this, (LinksUpdate.__proto__ || Object.getPrototypeOf(LinksUpdate)).apply(this, arguments));
+	    var _this = _possibleConstructorReturn(this, (LinksShow.__proto__ || Object.getPrototypeOf(LinksShow)).call(this, props));
+
+	    _this.state = {
+	      'unauthorized_error': false
+	    };
+	    return _this;
 	  }
 
-	  _createClass(LinksUpdate, [{
+	  _createClass(LinksShow, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      // If we really care about network performance and we don't want to fetch
+	      // the 'same' link twice, you can do this:
+	      //    if (!this.props.link) {
+	      //      const { id } = this.props.match.params; // Provided to us by react-router
+	      //     this.props.fetchLink(id);
+	      //    }
+	      // However, it's probably better to play it safe a re-fetch because
+	      // the user may have been sitting at this page for a long time.
+	      var alias = this.props.match.params.alias; // Provided to us by react-router
+
+	      this.props.fetchLink(alias);
+	      this.handleInitialize();
+
+	      // Scroll to top of window.
+	      window.scrollTo(0, 0);
+	    }
+	  }, {
+	    key: 'handleInitialize',
+	    value: function handleInitialize() {
+	      var initData = {
+	        "alias": this.props.link.alias,
+	        "url": this.props.link.url,
+	        "owner": this.props.link.owner
+	      };
+	      this.props.initialize(initData);
+	    }
+	  }, {
+	    key: 'onDeleteClick',
+	    value: function onDeleteClick() {
+	      var _this2 = this;
+
+	      // Pull the id from the URL.
+	      var alias = this.props.match.params.alias; // Provided to us by react-router
+
+	      this.props.deleteLink(alias, function () {
+	        _this2.props.history.push('/');
+	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var link = this.props.link;
+	      var handleSubmit = this.props.handleSubmit;
+
+
+	      if (!link) {
+	        return _react2.default.createElement(
+	          'div',
+	          null,
+	          'Loading...'
+	        );
+	      }
+
+	      var className = 'field ' + (this.state.unauthorized_error ? 'error' : '');
+
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          'div',
+	          null,
+	          _react2.default.createElement(
+	            _reactRouterDom.Link,
+	            { to: '/' },
+	            'Back To Index'
+	          )
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'ui segments' },
+	          _react2.default.createElement(
+	            'form',
+	            { className: 'ui segment huge form', onSubmit: handleSubmit(this.handleFormSubmit.bind(this)) },
+	            _react2.default.createElement(_reduxForm.Field, {
+	              label: 'Alias',
+	              name: 'alias',
+	              component: this.renderField
+	            }),
+	            _react2.default.createElement(_reduxForm.Field, {
+	              label: 'Url',
+	              name: 'url',
+	              component: this.renderField
+	            }),
+	            _react2.default.createElement(_reduxForm.Field, {
+	              label: 'Owner',
+	              name: 'owner',
+	              component: this.renderField
+	            }),
+	            _react2.default.createElement(
+	              'button',
+	              { type: 'submit', className: 'ui green button' },
+	              'Submit'
+	            ),
+	            _react2.default.createElement(
+	              _reactRouterDom.Link,
+	              { to: '/', className: 'ui blue button' },
+	              'Cancel'
+	            ),
+	            _react2.default.createElement(
+	              _reactRouterDom.Link,
+	              { to: '/', className: 'ui button red',
+	                onClick: this.onDeleteClick.bind(this) },
+	              ' Delete Link '
+	            )
+	          )
+	        ),
+	        this.state.unauthorized_error ? _react2.default.createElement(ErrorMessage, {
+	          header: 'Sorry, you do not own this link.',
+	          body: 'Only this link owner can change this link.'
+	        }) : null
+	      );
+	    }
+	  }, {
 	    key: 'renderField',
 	    value: function renderField(field) {
 	      //console.log(field.foo)
@@ -55611,62 +55767,22 @@
 	      );
 	    }
 	  }, {
-	    key: 'onSubmit',
-	    value: function onSubmit(values) {
-	      var _this2 = this;
+	    key: 'handleFormSubmit',
+	    value: function handleFormSubmit(formProps) {
+	      var _this3 = this;
 
-	      //console.log(values);
-	      //console.log(this.props);
 	      // this.props.history.push('/'); --> May return us to main page before link is created. Not ideal.
-	      this.props.createLink(values, function () {
-	        _this2.props.reset();
-	        _this2.props.fetchLinks();
-	        //this.props.history.push('/');
+	      this.props.putLink(formProps, function (successResponse) {
+	        //this.props.reset()
+	        _this3.props.fetchLinks();
+	        _this3.props.history.push('/');
+	      }, function (errorResponse) {
+	        _this3.setState({ 'unauthorized_error': true });
 	      });
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      // Pull on the handleSubmit function that we get from reduxForm.
-	      var handleSubmit = this.props.handleSubmit;
-
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'ui segments' },
-	        _react2.default.createElement(
-	          'form',
-	          { className: 'ui segment huge form', onSubmit: handleSubmit(this.onSubmit.bind(this)) },
-	          _react2.default.createElement(_reduxForm.Field, {
-	            label: 'Alias',
-	            name: 'alias',
-	            component: this.renderField
-	          }),
-	          _react2.default.createElement(_reduxForm.Field, {
-	            label: 'Url',
-	            name: 'url',
-	            component: this.renderField
-	          }),
-	          _react2.default.createElement(_reduxForm.Field, {
-	            label: 'Owner',
-	            name: 'owner',
-	            component: this.renderField
-	          }),
-	          _react2.default.createElement(
-	            'button',
-	            { type: 'submit', className: 'ui green button' },
-	            'Submit'
-	          ),
-	          _react2.default.createElement(
-	            _reactRouterDom.Link,
-	            { to: '/', className: 'ui blue button' },
-	            'Cancel'
-	          )
-	        )
-	      );
 	    }
 	  }]);
 
-	  return LinksUpdate;
+	  return LinksShow;
 	}(_react.Component);
 
 	function validate(values) {
@@ -55687,131 +55803,25 @@
 	  return errors;
 	}
 
-	// Make sure that the string that you assign to the form property is unique.
-	// This is a helper that allow our redux form to communicate directly from
-	// our component to the reducer that we've already setup. I think that
-	// this just attaches a bunch of action creators to the component??
+	// First argument to mapStateToProps is always are application state.
+	// But there IS a second argument, which we call 'ownProps'.
+	// ownProps is props object that is headed to the LinksShow component.
+	// So, 'this.props' in the component is ABSOLUTELY EQUAL TO (===) ownProps.
+	function mapStateToProps(_ref2, ownProps) {
+	  var links = _ref2.links,
+	      context = _ref2.context;
 
-	// OLD VERSION
-	//export default reduxForm({
-	//  validate,
-	//  form: 'LinksUpdateForm'
-	//})(LinksUpdate)
+	  // return { links } or { links: links }// This is dumb way.
+	  return {
+	    link: links[ownProps.match.params.alias],
+	    context: context
+	  };
+	}
 
-	// NEW VERSION
 	exports.default = (0, _reduxForm.reduxForm)({
 	  validate: validate,
 	  form: 'LinksUpdateForm'
-	})((0, _reactRedux.connect)(null, { createLink: _actions.createLink, fetchLinks: _actions.fetchLinks })(LinksUpdate));
-
-/***/ }),
-/* 557 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(2);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _reactRouterDom = __webpack_require__(216);
-
-	var _axios = __webpack_require__(524);
-
-	var _axios2 = _interopRequireDefault(_axios);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var Header = function (_Component) {
-	  _inherits(Header, _Component);
-
-	  function Header(props) {
-	    _classCallCheck(this, Header);
-
-	    var _this = _possibleConstructorReturn(this, (Header.__proto__ || Object.getPrototypeOf(Header)).call(this, props));
-
-	    _this.state = { 'user': '' };
-	    return _this;
-	  }
-
-	  _createClass(Header, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      var _this2 = this;
-
-	      _axios2.default.get('/api/context').then(function (response) {
-	        var user = response.data.user;
-	        console.log(response);
-	        console.log(response.data.user);
-	        _this2.setState({ 'user': user });
-	      });
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var user = this.props.user;
-
-	      if (user == '') {
-	        return _react2.default.createElement(
-	          'div',
-	          null,
-	          'Loading...'
-	        );
-	      }
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'ui fixed inverted menu' },
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'ui container' },
-	          _react2.default.createElement(
-	            'a',
-	            { href: '#', className: 'header item' },
-	            _react2.default.createElement('img', { className: 'logo ui image', src: '/static/logo.png' })
-	          ),
-	          _react2.default.createElement(
-	            _reactRouterDom.Link,
-	            { className: 'header item', to: '/links' },
-	            ' Go '
-	          ),
-	          _react2.default.createElement(
-	            _reactRouterDom.Link,
-	            { className: 'header item', to: '/links/update' },
-	            ' Update Link '
-	          ),
-	          _react2.default.createElement(
-	            'a',
-	            { href: '/logout', className: 'header item' },
-	            'Logout'
-	          ),
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'header item right' },
-	            ' Welcome, \xA0 ',
-	            this.state.user,
-	            ' '
-	          )
-	        )
-	      );
-	    }
-	  }]);
-
-	  return Header;
-	}(_react.Component);
-
-	exports.default = Header;
+	})((0, _reactRedux.connect)(mapStateToProps, { putLink: _actions.putLink, fetchLink: _actions.fetchLink, fetchLinks: _actions.fetchLinks, deleteLink: _actions.deleteLink, fetchContext: _actions.fetchContext })(LinksShow));
 
 /***/ })
 /******/ ]);

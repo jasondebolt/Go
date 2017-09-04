@@ -14,7 +14,7 @@ import {FETCH_LINKS, FETCH_LINK, DELETE_LINK} from '../actions';
 import _ from 'lodash';
 
 
-// We don't have a case for the CREATE_LINK action because
+// We don't have a case for the PUT_LINK action because
 // for that action we use another promise with a callback to automatically
 // redirect back to the main page after the ajax promise is resolved.
 // When the main page is hit, react router renders LinkIndex.

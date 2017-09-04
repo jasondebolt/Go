@@ -92,15 +92,24 @@ def delete_link(alias):
         }
     )
     print(response)
-    return '204'
+    return ('Link deleted', 204)
 
 @app.route('/api/links', methods=['PUT'])
 def put_link():
+    ddb_response = MO_ENTRIES_TABLE.get_item(
+        Key={
+            'alias': request.json['alias']
+        }
+    )
+    item = ddb_response.get('Item')
+    if item:
+        if item['owner'] != session['user']:
+            return ('Only link owners can update their links', 401)
     response = MO_ENTRIES_TABLE.put_item(
         Item={
             'alias': request.json['alias'],
             'url': request.json['url'],
-            'owner': session['user'],
+            'owner': request.json.get('owner') or session['user'],
             'clicks': 0
         }
     )

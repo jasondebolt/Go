@@ -10,8 +10,7 @@ import reducers from './reducers';
 import Header from './components/header';
 import LinkIndex from './components/links_index';
 import LinksNew from './components/links_new';
-import LinksUpdate from './components/links_update';
-import LinksShow from './components/links_show';
+import LinksShow from './components/links_edit';
 
 
 const createStoreWithMiddleware = applyMiddleware(promise)(createStore);
@@ -36,7 +35,6 @@ ReactDOM.render(
         <Header />
         <Switch> {/* Don't  forget the Capital S Switch statement!!! */}
           <Route path="/links/new" component={LinksNew} />
-          <Route path="/links/update" component={LinksUpdate} />
           {/* this would work too:
             <Route path="/links/new" component={LinksNew} />
             {/* this would work too:
