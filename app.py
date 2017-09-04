@@ -20,6 +20,18 @@ oauth = OAuth(app)
 def isLocal():
     return os.environ.get('SERVER_NAME', '') == ''
 
+def getBasePath():
+    if isLocal():
+        return 'http:127.0.0.1:5000/local'
+    # May return something like this...
+    # https://z4ru6xjb9f.execute-api.us-west-2.amazonaws.com/dev"
+    return os.environ.get('SERVER_NAME')
+
+def getServerPrefix():
+    if isLocal():
+        return '/local'
+    return '/' + os.environ.get('SERVER_ENV')
+
 if not isLocal():
     # Use S3 bucket instead for static assets.
     s3 = FlaskS3()
@@ -60,6 +72,8 @@ API_URL = '/api'
 
 RESERVED_PATHS = ['/api', '/static']
 
+
+
 @app.route('/')
 def show_entries():
     if isLocal():
@@ -67,27 +81,24 @@ def show_entries():
             print('user {0} is already logged in'.format(session['user']))
             return render_template('index.html')
         else:
-            return redirect(API_URL + '/login')
+            return redirect(getServerPrefix() + API_URL + '/login')
     if 'google_token' in session and 'user' in session:
         return render_template('index.html')
-    return redirect(
-        '{0}/{1}/login'.format(os.environ.get(
-            'SERVER_NAME', 'http://127.0.0.1:5000'), API_URL)
-    )
+    return redirect(getServerPrefix() + API_URL + '/login')
 
-@app.route(API_URL + '/context', methods=['GET'])
+@app.route(getServerPrefix() + API_URL + '/context', methods=['GET'])
 def context():
     return json.dumps({
         'user': session['user']
     })
 
-@app.route(API_URL + '/links', methods=['GET'])
+@app.route(getServerPrefix() + API_URL + '/links', methods=['GET'])
 def links():
     response = MO_ENTRIES_TABLE.scan()
     items = response.get('Items')
     return json.dumps(items, use_decimal=True)
 
-@app.route(API_URL + '/links/<alias>', methods=['DELETE'])
+@app.route(getServerPrefix() + API_URL + '/links/<alias>', methods=['DELETE'])
 def delete_link(alias):
     ddb_response = MO_ENTRIES_TABLE.get_item(
         Key={
@@ -106,7 +117,7 @@ def delete_link(alias):
     print(response)
     return ('Link deleted', 204)
 
-@app.route(API_URL + '/links', methods=['PUT'])
+@app.route(getServerPrefix() + API_URL + '/links', methods=['PUT'])
 def put_link():
     ddb_response = MO_ENTRIES_TABLE.get_item(
         Key={
@@ -128,7 +139,7 @@ def put_link():
     return 'Link was put', 201
 
 
-@app.route(API_URL + '/links/<alias>', methods=['GET'])
+@app.route(getServerPrefix() + API_URL + '/links/<alias>', methods=['GET'])
 def get_link(alias):
     response = MO_ENTRIES_TABLE.get_item(
         Key={
@@ -138,7 +149,7 @@ def get_link(alias):
     print(response)
     return json.dumps(response, use_decimal=True)
 
-@app.route(API_URL + '/login', methods=['GET', 'POST'])
+@app.route(getServerPrefix() + API_URL + '/login', methods=['GET', 'POST'])
 def login():
     if isLocal():
         if request.method == 'POST':
@@ -149,14 +160,12 @@ def login():
                 <p><input type=text required name=user>
                 <p><input type=submit value=Login>
             </form>
-        '''.format(API_URL)
+        '''.format(getServerPrefix() + API_URL)
     else:
-        url = '{0}/{1}/oauth2callback'.format(
-            os.environ.get('SERVER_NAME', 'http://127.0.0.1:5000'),
-            API_URL)
+        url = '{0}{1}/oauth2callback'.format(getBasePath(), API_URL)
         return google.authorize(callback=url)
 
-@app.route(API_URL + '/logout')
+@app.route(getServerPrefix() + API_URL + '/logout')
 def logout():
     session.pop('google_token', None)
     session['user'] = None
@@ -166,7 +175,7 @@ def logout():
     return redirect('/')
     #return render_template('landing.html')
 
-@app.route(API_URL + '/oauth2callback')
+@app.route(getServerPrefix() + API_URL + '/oauth2callback')
 def authorized():
     """Authorization callback."""
     resp = google.authorized_response()
@@ -185,14 +194,14 @@ def get_google_oauth_token():
     return session.get('google_token')
 
 
-@app.route(API_URL + '/account')
+@app.route(getServerPrefix() + API_URL + '/account')
 def whoami():
     if 'google_token' in session:
         me = google.get('userinfo')
         return jsonify({'data': me.data})
-    return redirect(API_URL + '/login')
+    return redirect(getServerPrefix() + API_URL + '/login')
 
-@app.route(API_URL + '/env')
+@app.route(getServerPrefix() + API_URL + '/env')
 def environ():
     if isLocal():
         return str(os.environ)

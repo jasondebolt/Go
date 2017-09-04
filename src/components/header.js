@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { fetchContext } from '../actions';
-import { API_URL } from '../constants';
+import { FULL_API_URL } from '../constants';
+var Config = require('Config')
 //import axios from 'axios';
 
 class Header extends Component {
@@ -31,8 +32,8 @@ class Header extends Component {
         <a href="#" className="header item">
           <img className="logo ui image" src="/static/logo.png" />
         </a>
-        <Link className="header item" to={API_URL + "/links"}> Go </Link>
-        <a href={API_URL + "/logout"} className="header item">Logout</a>
+        <Link className="header item" to={FULL_API_URL + "/links"}> Go </Link>
+        <a href={FULL_API_URL + "/logout"} className="header item">Logout</a>
           <div className="header item right"> Welcome, &nbsp; {this.props.context.user} </div>
       </div>
     </div>

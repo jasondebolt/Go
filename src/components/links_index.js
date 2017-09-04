@@ -28,7 +28,7 @@ class LinkIndex extends Component {
   render() {
     return (
       <div className="ui grid">
-        <div class="row">
+        <div className="row">
           <div className="sixteen wide column">
             <h2 className="ui header">Create a link</h2>
             <div className="ui grid">
@@ -37,7 +37,7 @@ class LinkIndex extends Component {
               </div>
             </div>
           </div>
-          <div class="row">
+          <div className="row">
             <br />
             <h2 className="ui header">Links</h2>
             <table className="ui celled table">
