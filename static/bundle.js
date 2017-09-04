@@ -41092,6 +41092,8 @@
 
 	var _axios2 = _interopRequireDefault(_axios);
 
+	var _constants = __webpack_require__(558);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var FETCH_CONTEXT = exports.FETCH_CONTEXT = 'fetch_context';
@@ -41100,11 +41102,8 @@
 	var FETCH_LINK = exports.FETCH_LINK = 'fetch_link';
 	var DELETE_LINK = exports.DELETE_LINK = 'delete_link';
 
-	//const ROOT_URL = 'http://reduxblog.herokuapp.com/api'
-	var ROOT_URL = '/api';
-
 	function fetchContext() {
-	  var request = _axios2.default.get(ROOT_URL + '/context');
+	  var request = _axios2.default.get(_constants.API_URL + '/context');
 	  return {
 	    type: FETCH_CONTEXT,
 	    payload: request
@@ -41112,7 +41111,7 @@
 	}
 
 	function fetchLinks() {
-	  var request = _axios2.default.get(ROOT_URL + '/links');
+	  var request = _axios2.default.get(_constants.API_URL + '/links');
 	  return {
 	    type: FETCH_LINKS,
 	    payload: request
@@ -41120,12 +41119,9 @@
 	}
 
 	function putLink(values, successCallback, errorCallback) {
-	  // OLD VERSION
-	  //const request = axios.post(`${ROOT_URL}/links${API_KEY}`, values);
-
 	  // new version will callback which contains promise to back back to main page
 	  // after request axios promise is resolved.
-	  var request = _axios2.default.put(ROOT_URL + '/links', values).then(function (response) {
+	  var request = _axios2.default.put(_constants.API_URL + '/links', values).then(function (response) {
 	    return successCallback(response);
 	  }).catch(function (response) {
 	    return errorCallback(response);
@@ -41138,7 +41134,7 @@
 	}
 
 	function fetchLink(alias) {
-	  var request = _axios2.default.get(ROOT_URL + '/links/' + alias);
+	  var request = _axios2.default.get(_constants.API_URL + '/links/' + alias);
 
 	  return {
 	    type: FETCH_LINK,
@@ -41147,7 +41143,7 @@
 	}
 
 	function deleteLink(alias, successCallback, errorCallback) {
-	  var request = _axios2.default.delete(ROOT_URL + '/links/' + alias).then(function (response) {
+	  var request = _axios2.default.delete(_constants.API_URL + '/links/' + alias).then(function (response) {
 	    return successCallback(response);
 	  }).catch(function (response) {
 	    return errorCallback(response);
@@ -55100,6 +55096,8 @@
 
 	var _actions = __webpack_require__(523);
 
+	var _constants = __webpack_require__(558);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -55159,12 +55157,12 @@
 	          ),
 	          _react2.default.createElement(
 	            _reactRouterDom.Link,
-	            { className: 'header item', to: '/links' },
+	            { className: 'header item', to: _constants.API_URL + "/links" },
 	            ' Go '
 	          ),
 	          _react2.default.createElement(
 	            'a',
-	            { href: '/logout', className: 'header item' },
+	            { href: _constants.API_URL + "/logout", className: 'header item' },
 	            'Logout'
 	          ),
 	          _react2.default.createElement(
@@ -55799,6 +55797,18 @@
 	    )
 	  );
 	};
+
+/***/ }),
+/* 557 */,
+/* 558 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var API_URL = exports.API_URL = '/api';
 
 /***/ })
 /******/ ]);

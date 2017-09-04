@@ -1,15 +1,13 @@
 import axios from 'axios';
+import { API_URL } from '../constants';
 export const FETCH_CONTEXT = 'fetch_context';
 export const FETCH_LINKS = 'fetch_links';
 export const PUT_LINK = 'put_link';
 export const FETCH_LINK = 'fetch_link';
 export const DELETE_LINK = 'delete_link';
 
-//const ROOT_URL = 'http://reduxblog.herokuapp.com/api'
-const ROOT_URL = '/api'
-
 export function fetchContext() {
-  const request = axios.get(`${ROOT_URL}/context`)
+  const request = axios.get(`${API_URL}/context`)
   return {
     type: FETCH_CONTEXT,
     payload: request
@@ -17,7 +15,7 @@ export function fetchContext() {
 }
 
 export function fetchLinks() {
-  const request = axios.get(`${ROOT_URL}/links`)
+  const request = axios.get(`${API_URL}/links`)
   return {
     type: FETCH_LINKS,
     payload: request
@@ -25,12 +23,9 @@ export function fetchLinks() {
 }
 
 export function putLink(values, successCallback, errorCallback) {
-  // OLD VERSION
-  //const request = axios.post(`${ROOT_URL}/links${API_KEY}`, values);
-
   // new version will callback which contains promise to back back to main page
   // after request axios promise is resolved.
-  const request = axios.put(`${ROOT_URL}/links`, values)
+  const request = axios.put(`${API_URL}/links`, values)
     .then((response) => successCallback(response))
     .catch((response) => errorCallback(response))
 
@@ -41,7 +36,7 @@ export function putLink(values, successCallback, errorCallback) {
 }
 
 export function fetchLink(alias) {
-  const request = axios.get(`${ROOT_URL}/links/${alias}`)
+  const request = axios.get(`${API_URL}/links/${alias}`)
 
   return {
     type: FETCH_LINK,
@@ -50,7 +45,7 @@ export function fetchLink(alias) {
 }
 
 export function deleteLink(alias, successCallback, errorCallback) {
-  const request = axios.delete(`${ROOT_URL}/links/${alias}`)
+  const request = axios.delete(`${API_URL}/links/${alias}`)
     .then((response) => successCallback(response))
     .catch((response) => errorCallback(response))
 

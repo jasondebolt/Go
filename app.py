@@ -18,7 +18,7 @@ app = Flask(__name__)
 oauth = OAuth(app)
 
 def isLocal():
-    return os.environ.get('SERVER_NAME') is None
+    return os.environ.get('SERVER_NAME', '') == ''
 
 if not isLocal():
     # Use S3 bucket instead for static assets.
@@ -56,6 +56,7 @@ google = oauth.remote_app(
 DYNAMODB = boto3.resource('dynamodb', region_name='us-west-2')
 MO_ENTRIES_TABLE = DYNAMODB.Table('mo-entries')
 MO_MESSAGES_TABLE = DYNAMODB.Table('mo-messages')
+API_URL = '/api'
 
 @app.route('/')
 def show_entries():
@@ -64,27 +65,27 @@ def show_entries():
             print('user {0} is already logged in'.format(session['user']))
             return render_template('index.html')
         else:
-            redirect('/login')
+            return redirect(API_URL + '/login')
     if 'google_token' in session and 'user' in session:
         return render_template('index.html')
     return redirect(
-        '{0}/login'.format(os.environ.get(
-            'SERVER_NAME', 'http://127.0.0.1:5000'))
+        '{0}/{1}/login'.format(os.environ.get(
+            'SERVER_NAME', 'http://127.0.0.1:5000'), API_URL)
     )
 
-@app.route('/api/context', methods=['GET'])
+@app.route(API_URL + '/context', methods=['GET'])
 def context():
     return json.dumps({
         'user': session['user']
     })
 
-@app.route('/api/links', methods=['GET'])
+@app.route(API_URL + '/links', methods=['GET'])
 def links():
     response = MO_ENTRIES_TABLE.scan()
     items = response.get('Items')
     return json.dumps(items, use_decimal=True)
 
-@app.route('/api/links/<alias>', methods=['DELETE'])
+@app.route(API_URL + '/links/<alias>', methods=['DELETE'])
 def delete_link(alias):
     ddb_response = MO_ENTRIES_TABLE.get_item(
         Key={
@@ -103,7 +104,7 @@ def delete_link(alias):
     print(response)
     return ('Link deleted', 204)
 
-@app.route('/api/links', methods=['PUT'])
+@app.route(API_URL + '/links', methods=['PUT'])
 def put_link():
     ddb_response = MO_ENTRIES_TABLE.get_item(
         Key={
@@ -122,10 +123,10 @@ def put_link():
             'clicks': 0
         }
     )
-    return '201'
+    return 'Link was put', 201
 
 
-@app.route('/api/links/<alias>', methods=['GET'])
+@app.route(API_URL + '/links/<alias>', methods=['GET'])
 def get_link(alias):
     response = MO_ENTRIES_TABLE.get_item(
         Key={
@@ -135,51 +136,25 @@ def get_link(alias):
     print(response)
     return json.dumps(response, use_decimal=True)
 
-@app.route('/edit', methods=['GET'])
-def edit_page():
-    return render_template('edit_entry.html')
-
-@app.route('/delete', methods=['GET'])
-def delete_page():
-    return render_template('edit_entry.html')
-
-@app.route('/edit_link', methods=['POST'])
-def edit_entry():
-    ddb_response = MO_ENTRIES_TABLE.get_item(
-        Key={
-            'alias': request.form['alias']
-        }
-    )
-    item = ddb_response.get('Item')
-    MO_ENTRIES_TABLE.put_item(
-        Item={
-            'alias': request.form['alias'],
-            'url': request.form['url'],
-            'owner': request.form['owner'],
-            'clicks': item['clicks']
-        }
-    )
-    flash('Entry was successfully updated.')
-    return redirect('/')
-
-@app.route('/login', methods=['GET', 'POST'])
+@app.route(API_URL + '/login', methods=['GET', 'POST'])
 def login():
     if isLocal():
         if request.method == 'POST':
             session['user'] = request.form['user']
             return redirect('/')
         return '''
-            <form method="post">
+            <form method="post" action="{0}/login">
                 <p><input type=text required name=user>
                 <p><input type=submit value=Login>
             </form>
-        '''
+        '''.format(API_URL)
     else:
-        url = '{0}/oauth2callback'.format(
-            os.environ.get('SERVER_NAME', 'http://127.0.0.1:5000'))
+        url = '{0}/{1}/oauth2callback'.format(
+            os.environ.get('SERVER_NAME', 'http://127.0.0.1:5000'),
+            API_URL)
         return google.authorize(callback=url)
 
-@app.route('/logout')
+@app.route(API_URL + '/logout')
 def logout():
     session.pop('google_token', None)
     session['user'] = None
@@ -189,7 +164,7 @@ def logout():
     return redirect('/')
     #return render_template('landing.html')
 
-@app.route('/oauth2callback')
+@app.route(API_URL + '/oauth2callback')
 def authorized():
     """Authorization callback."""
     resp = google.authorized_response()
@@ -208,42 +183,18 @@ def get_google_oauth_token():
     return session.get('google_token')
 
 
-@app.route('/account')
+@app.route(API_URL + '/account')
 def whoami():
     if 'google_token' in session:
         me = google.get('userinfo')
         return jsonify({'data': me.data})
-    return redirect('/login')
+    return redirect(API_URL + '/login')
 
-@app.route('/env')
+@app.route(API_URL + '/env')
 def environ():
-    if app.debug:
+    if isLocal():
         return str(os.environ)
-    return 'not in debug mode'
-
-@app.route('/add', methods=['POST'])
-def add_entry():
-    """"Add an alias."""
-    alias = request.form['alias']
-    ddb_response = MO_ENTRIES_TABLE.get_item(
-        Key={
-            'alias': request.form['alias']
-        }
-    )
-    item = ddb_response.get('Item')
-    if item:
-        flash('An entry for alias {0} already exists.'.format(alias))
-    else:
-        MO_ENTRIES_TABLE.put_item(
-            Item={
-                'alias': request.form['alias'],
-                'url': request.form['url'],
-                'owner': session['user'].get('email'),
-                'clicks': 0,
-            }
-        )
-        flash('New entry was successfully posted')
-    return redirect('/')
+    return 'not running locally.', 200
 
 @app.route('/<alias>')
 def redirect_url(alias):
@@ -275,23 +226,6 @@ def increment_clicks(alias):
             'clicks': item.get('clicks', 0) + 1
         }
     )
-
-@app.route('/messages', methods=['GET', 'POST'])
-def index():
-    if request.method == 'POST':
-        text = request.form['text']
-        MO_MESSAGES_TABLE.put_item(
-            Item={
-                'id': str(uuid.uuid4()),
-                'message': text,
-                'author': session['user'].get('email')
-                }
-        )
-        flash('New entry was successfully posted')
-    response = MO_MESSAGES_TABLE.scan()
-    items = response.get('Items')
-    return render_template('messages.html')
-
 
 if __name__ == '__main__':
     # The following code only gets executed when the app is run locally
