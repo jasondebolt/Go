@@ -55284,34 +55284,42 @@
 	        { className: 'ui grid' },
 	        _react2.default.createElement(
 	          'div',
-	          { className: 'sixteen wide column' },
+	          { 'class': 'row' },
 	          _react2.default.createElement(
-	            'h2',
-	            { className: 'ui header' },
-	            'Create a link'
+	            'div',
+	            { className: 'sixteen wide column' },
+	            _react2.default.createElement(
+	              'h2',
+	              { className: 'ui header' },
+	              'Create a link'
+	            ),
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'ui grid' },
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'sixteen wide column centered' },
+	                _react2.default.createElement(_links_new2.default, null)
+	              )
+	            )
 	          ),
 	          _react2.default.createElement(
 	            'div',
-	            { className: 'ui grid' },
+	            { 'class': 'row' },
+	            _react2.default.createElement('br', null),
 	            _react2.default.createElement(
-	              'div',
-	              { className: 'wide column centered' },
-	              _react2.default.createElement(_links_new2.default, null)
-	            )
-	          ),
-	          _react2.default.createElement('br', null),
-	          _react2.default.createElement(
-	            'h2',
-	            { className: 'ui header' },
-	            'Links'
-	          ),
-	          _react2.default.createElement(
-	            'table',
-	            { className: 'ui celled table' },
+	              'h2',
+	              { className: 'ui header' },
+	              'Links'
+	            ),
 	            _react2.default.createElement(
-	              'tbody',
-	              null,
-	              this.renderLinks()
+	              'table',
+	              { className: 'ui celled table' },
+	              _react2.default.createElement(
+	                'tbody',
+	                null,
+	                this.renderLinks()
+	              )
 	            )
 	          )
 	        )

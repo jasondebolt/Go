@@ -26,6 +26,9 @@ ReactDOM.render(
             <Route path="/links/:alias/:comment" component ...
             params are accessible in the components via 'this.props.match.params.id'
           */}
+          {/*
+            the "+" in ":alias+"" allows slashes to be included in the aliases.
+          */}
           <Route path="/links/edit/:alias+" component={LinksEdit} />
           <Route path="/" component={LinkIndex} />
         </Switch>
