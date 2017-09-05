@@ -3,17 +3,6 @@ module.exports = {
   entry: [
     "./src/index.js"
   ],
-  externals: {
-    'Config': JSON.stringify(
-      process.env.SERVER_ENV == 'dev' ? {
-        serverUrl: "https://z4ru6xjb9f.execute-api.us-west-2.amazonaws.com/dev",
-        urlPath: "dev"
-      } : {
-        serverUrl: "http://127.0.0.1:5000",
-        urlPath: "local"
-      }
-    )
-  },
   output: {
     path: __dirname + '/static',
     filename: "bundle.js"

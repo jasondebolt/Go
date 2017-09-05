@@ -1,5 +1,6 @@
 import os
 import decimal
+import socket
 import uuid
 import logging
 import simplejson as json
@@ -19,18 +20,6 @@ oauth = OAuth(app)
 
 def isLocal():
     return os.environ.get('SERVER_NAME', '') == ''
-
-def getBasePath():
-    if isLocal():
-        return 'http:127.0.0.1:5000/local'
-    # May return something like this...
-    # https://z4ru6xjb9f.execute-api.us-west-2.amazonaws.com/dev"
-    return os.environ.get('SERVER_NAME')
-
-def getServerPrefix():
-    if isLocal():
-        return '/local'
-    return '/' + os.environ.get('SERVER_ENV')
 
 if not isLocal():
     # Use S3 bucket instead for static assets.
@@ -73,6 +62,10 @@ API_URL = '/api'
 RESERVED_PATHS = ['/api', '/static']
 
 
+@app.route("/hostname/")
+def return_hostname():
+    return "This is an example wsgi app served from {} to {}".format(socket.gethostname(), request.remote_addr)
+
 
 @app.route('/')
 def show_entries():
@@ -81,24 +74,22 @@ def show_entries():
             print('user {0} is already logged in'.format(session['user']))
             return render_template('index.html')
         else:
-            return redirect(getServerPrefix() + API_URL + '/login')
+            return redirect(API_URL + '/login')
     if 'google_token' in session and 'user' in session:
         return render_template('index.html')
-    return redirect(getServerPrefix() + API_URL + '/login')
+    return redirect(os.environ.get('SERVER_NAME') + API_URL + '/login')
 
-@app.route(getServerPrefix() + API_URL + '/context', methods=['GET'])
+@app.route(API_URL + '/context', methods=['GET'])
 def context():
-    return json.dumps({
-        'user': session['user']
-    })
+    return session['user']
 
-@app.route(getServerPrefix() + API_URL + '/links', methods=['GET'])
+@app.route(API_URL + '/links', methods=['GET'])
 def links():
     response = MO_ENTRIES_TABLE.scan()
     items = response.get('Items')
     return json.dumps(items, use_decimal=True)
 
-@app.route(getServerPrefix() + API_URL + '/links/<alias>', methods=['DELETE'])
+@app.route(API_URL + '/links/<alias>', methods=['DELETE'])
 def delete_link(alias):
     ddb_response = MO_ENTRIES_TABLE.get_item(
         Key={
@@ -107,7 +98,8 @@ def delete_link(alias):
     )
     item = ddb_response.get('Item')
     if item:
-        if item['owner'] != session['user']:
+        user_dict = json.loads(session['user'])
+        if item['owner'] != user_dict['user']['email']:
             return ('Only link owners can delete their links', 401)
     response = MO_ENTRIES_TABLE.delete_item(
         Key={
@@ -117,7 +109,7 @@ def delete_link(alias):
     print(response)
     return ('Link deleted', 204)
 
-@app.route(getServerPrefix() + API_URL + '/links', methods=['PUT'])
+@app.route(API_URL + '/links', methods=['PUT'])
 def put_link():
     ddb_response = MO_ENTRIES_TABLE.get_item(
         Key={
@@ -125,21 +117,22 @@ def put_link():
         }
     )
     item = ddb_response.get('Item')
+    user_dict = json.loads(session['user'])
     if item:
-        if item['owner'] != session['user']:
+        if item['owner'] != user_dict['user']['email']:
             return ('Only link owners can update their links', 401)
     response = MO_ENTRIES_TABLE.put_item(
         Item={
             'alias': request.json['alias'],
             'url': request.json['url'],
-            'owner': request.json.get('owner') or session['user'],
+            'owner': request.json.get('owner') or user_dict['user']['email'],
             'clicks': 0
         }
     )
     return 'Link was put', 201
 
 
-@app.route(getServerPrefix() + API_URL + '/links/<alias>', methods=['GET'])
+@app.route(API_URL + '/links/<alias>', methods=['GET'])
 def get_link(alias):
     response = MO_ENTRIES_TABLE.get_item(
         Key={
@@ -149,33 +142,42 @@ def get_link(alias):
     print(response)
     return json.dumps(response, use_decimal=True)
 
-@app.route(getServerPrefix() + API_URL + '/login', methods=['GET', 'POST'])
+@app.route(API_URL + '/login', methods=['GET', 'POST'])
 def login():
     if isLocal():
         if request.method == 'POST':
-            session['user'] = request.form['user']
+            session['user'] = json.dumps({
+                'user': {
+                    'email': request.form['email']
+                }
+            })
+            print(session['user'])
             return redirect('/')
         return '''
             <form method="post" action="{0}/login">
-                <p><input type=text required name=user>
+                <p>Enter your email
+                <p><input type=text required name=email>
                 <p><input type=submit value=Login>
             </form>
-        '''.format(getServerPrefix() + API_URL)
+        '''.format(API_URL)
     else:
-        url = '{0}{1}/oauth2callback'.format(getBasePath(), API_URL)
+        url = '{0}{1}/oauth2callback'.format(
+            os.environ.get('SERVER_NAME'), API_URL)
         return google.authorize(callback=url)
 
-@app.route(getServerPrefix() + API_URL + '/logout')
+@app.route(API_URL + '/logout')
 def logout():
     session.pop('google_token', None)
     session['user'] = None
     session.clear()
     for key in session.keys():
         session.pop(key, None)
-    return redirect('/')
+    if isLocal():
+        return redirect('/')
+    return redirect(os.environ.get('SERVER_NAME'))
     #return render_template('landing.html')
 
-@app.route(getServerPrefix() + API_URL + '/oauth2callback')
+@app.route(API_URL + '/oauth2callback')
 def authorized():
     """Authorization callback."""
     resp = google.authorized_response()
@@ -194,14 +196,14 @@ def get_google_oauth_token():
     return session.get('google_token')
 
 
-@app.route(getServerPrefix() + API_URL + '/account')
+@app.route(API_URL + '/account')
 def whoami():
     if 'google_token' in session:
         me = google.get('userinfo')
         return jsonify({'data': me.data})
-    return redirect(getServerPrefix() + API_URL + '/login')
+    return redirect(API_URL + '/login')
 
-@app.route(getServerPrefix() + API_URL + '/env')
+@app.route(API_URL + '/env')
 def environ():
     if isLocal():
         return str(os.environ)

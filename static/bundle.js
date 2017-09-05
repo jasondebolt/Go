@@ -77,19 +77,19 @@
 
 	var _reducers2 = _interopRequireDefault(_reducers);
 
-	var _header = __webpack_require__(554);
+	var _header = __webpack_require__(553);
 
 	var _header2 = _interopRequireDefault(_header);
 
-	var _links_index = __webpack_require__(555);
+	var _links_index = __webpack_require__(554);
 
 	var _links_index2 = _interopRequireDefault(_links_index);
 
-	var _links_new = __webpack_require__(556);
+	var _links_new = __webpack_require__(555);
 
 	var _links_new2 = _interopRequireDefault(_links_new);
 
-	var _links_edit = __webpack_require__(558);
+	var _links_edit = __webpack_require__(557);
 
 	var _links_edit2 = _interopRequireDefault(_links_edit);
 
@@ -28899,7 +28899,7 @@
 
 	var _reducer_links2 = _interopRequireDefault(_reducer_links);
 
-	var _reducer_context = __webpack_require__(553);
+	var _reducer_context = __webpack_require__(552);
 
 	var _reducer_context2 = _interopRequireDefault(_reducer_context);
 
@@ -41066,7 +41066,7 @@
 
 	var _actions = __webpack_require__(523);
 
-	var _lodash = __webpack_require__(552);
+	var _lodash = __webpack_require__(551);
 
 	var _lodash2 = _interopRequireDefault(_lodash);
 
@@ -41092,7 +41092,7 @@
 
 	var _axios2 = _interopRequireDefault(_axios);
 
-	var _constants = __webpack_require__(550);
+	var _apiConfig = __webpack_require__(550);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -41103,7 +41103,7 @@
 	var DELETE_LINK = exports.DELETE_LINK = 'delete_link';
 
 	function fetchContext() {
-	  var request = _axios2.default.get(_constants.FULL_API_URL + '/context');
+	  var request = _axios2.default.get(_apiConfig.API_ROOT + '/context');
 	  return {
 	    type: FETCH_CONTEXT,
 	    payload: request
@@ -41111,7 +41111,7 @@
 	}
 
 	function fetchLinks() {
-	  var request = _axios2.default.get(_constants.FULL_API_URL + '/links');
+	  var request = _axios2.default.get(_apiConfig.API_ROOT + '/links');
 	  return {
 	    type: FETCH_LINKS,
 	    payload: request
@@ -41121,7 +41121,7 @@
 	function putLink(values, successCallback, errorCallback) {
 	  // new version will callback which contains promise to back back to main page
 	  // after request axios promise is resolved.
-	  var request = _axios2.default.put(_constants.FULL_API_URL + '/links', values).then(function (response) {
+	  var request = _axios2.default.put(_apiConfig.API_ROOT + '/links', values).then(function (response) {
 	    return successCallback(response);
 	  }).catch(function (response) {
 	    return errorCallback(response);
@@ -41134,7 +41134,7 @@
 	}
 
 	function fetchLink(alias) {
-	  var request = _axios2.default.get(_constants.FULL_API_URL + '/links/' + alias);
+	  var request = _axios2.default.get(_apiConfig.API_ROOT + '/links/' + alias);
 
 	  return {
 	    type: FETCH_LINK,
@@ -41143,8 +41143,8 @@
 	}
 
 	function deleteLink(alias, successCallback, errorCallback) {
-	  console.log(_constants.FULL_API_URL + '/links/' + alias);
-	  var request = _axios2.default.delete(_constants.FULL_API_URL + '/links/' + alias).then(function (response) {
+	  console.log(_apiConfig.API_ROOT + '/links/' + alias);
+	  var request = _axios2.default.delete(_apiConfig.API_ROOT + '/links/' + alias).then(function (response) {
 	    return successCallback(response);
 	  }).catch(function (response) {
 	    return errorCallback(response);
@@ -42689,23 +42689,44 @@
 /* 550 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	'use strict';
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var Config = __webpack_require__(551);
-	var API_URL = exports.API_URL = '/api';
-	var FULL_API_URL = exports.FULL_API_URL = '/' + Config.urlPath + API_URL;
+	var backendHost = void 0;
+	var relativePath = void 0;
+
+	var hostname = window && window.location && window.location.hostname;
+
+	console.log('HOSTNAME IS' + hostname);
+
+	if (hostname === 'www.jase.cc') {
+	  backendHost = 'https://api.jase.cc';
+	  relativePath = '';
+	} else if (hostname === 'www.staging.jase.cc') {
+	  backendHost = 'https://staging.api.jase.cc';
+	  relativePath = '';
+	} else if (hostname === 'www.veganolia.com') {
+	  backendHost = 'https://www.veganolia.com';
+	  relativePath = '';
+	} else if (/^qa/.test(hostname)) {
+	  backendHost = 'https://api.' + hostname;
+	  relativePath = '';
+	} else if (hostname == 'z4ru6xjb9f.execute-api.us-west-2.amazonaws.com') {
+	  backendHost = 'https://z4ru6xjb9f.execute-api.us-west-2.amazonaws.com/dev';
+	  relativePath = '/dev';
+	} else {
+	  backendHost = process.env.REACT_APP_BACKEND_HOST || 'http://127.0.0.1:5000';
+	  relativePath = '';
+	}
+
+	var API_ROOT = exports.API_ROOT = backendHost + '/api';
+	var NON_API_ROOT = exports.NON_API_ROOT = '' + relativePath;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
 /* 551 */
-/***/ (function(module, exports) {
-
-	module.exports = {"serverUrl":"http://127.0.0.1:5000","urlPath":"local"};
-
-/***/ }),
-/* 552 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global) {/**
@@ -55063,7 +55084,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(193)(module), (function() { return this; }())))
 
 /***/ }),
-/* 553 */
+/* 552 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55079,8 +55100,14 @@
 	  // Ultimately, we need to return some kind of object here.
 	  switch (action.type) {
 	    case _actions.FETCH_CONTEXT:
-	      var context = action.payload.data;
-	      return context;
+	      console.log(action.payload.data);
+	      return action.payload.data;
+	    //const context = {
+	    //  'user': {
+	    //    'email': action.payload.data.user.email
+	    //  }
+	    //}
+	    //return context;
 	    default:
 	      return state;
 	  }
@@ -55088,14 +55115,22 @@
 
 	var _actions = __webpack_require__(523);
 
-	var _lodash = __webpack_require__(552);
+	var _lodash = __webpack_require__(551);
 
 	var _lodash2 = _interopRequireDefault(_lodash);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	function getEmail(obj) {
+	  if (_lodash2.default.has(obj['user'], 'email')) {
+	    return obj['user']['email'];
+	  }
+	  console.log('User does not have an email');
+	  return '';
+	}
+
 /***/ }),
-/* 554 */
+/* 553 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55116,7 +55151,11 @@
 
 	var _actions = __webpack_require__(523);
 
-	var _constants = __webpack_require__(550);
+	var _lodash = __webpack_require__(551);
+
+	var _lodash2 = _interopRequireDefault(_lodash);
+
+	var _apiConfig = __webpack_require__(550);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -55126,7 +55165,6 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var Config = __webpack_require__(551);
 	//import axios from 'axios';
 
 	var Header = function (_Component) {
@@ -55158,7 +55196,7 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      if (!this.props.context) {
+	      if (!this.props.context || _lodash2.default.isEmpty(this.props.context)) {
 	        return _react2.default.createElement(
 	          'div',
 	          null,
@@ -55174,23 +55212,23 @@
 	          _react2.default.createElement(
 	            'a',
 	            { href: '#', className: 'header item' },
-	            _react2.default.createElement('img', { className: 'logo ui image', src: '/static/logo.png' })
+	            _react2.default.createElement('img', { className: 'logo ui image', src: _apiConfig.NON_API_ROOT + "/static/logo.png" })
 	          ),
 	          _react2.default.createElement(
 	            _reactRouterDom.Link,
-	            { className: 'header item', to: _constants.FULL_API_URL + "/links" },
+	            { className: 'header item', to: _apiConfig.NON_API_ROOT + "/api/links" },
 	            ' Go '
 	          ),
 	          _react2.default.createElement(
 	            'a',
-	            { href: _constants.FULL_API_URL + "/logout", className: 'header item' },
+	            { href: _apiConfig.NON_API_ROOT + "/api/logout", className: 'header item' },
 	            'Logout'
 	          ),
 	          _react2.default.createElement(
 	            'div',
 	            { className: 'header item right' },
 	            ' Welcome, \xA0 ',
-	            this.props.context.user,
+	            this.props.context.user.email,
 	            ' '
 	          )
 	        )
@@ -55210,7 +55248,7 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, { fetchContext: _actions.fetchContext })(Header);
 
 /***/ }),
-/* 555 */
+/* 554 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55231,7 +55269,7 @@
 
 	var _reactRouterDom = __webpack_require__(216);
 
-	var _links_new = __webpack_require__(556);
+	var _links_new = __webpack_require__(555);
 
 	var _links_new2 = _interopRequireDefault(_links_new);
 
@@ -55361,7 +55399,7 @@
 	// The above is identical to using mapDispatchToProps.
 
 /***/ }),
-/* 556 */
+/* 555 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55386,7 +55424,7 @@
 
 	var _actions = __webpack_require__(523);
 
-	var _messages = __webpack_require__(557);
+	var _messages = __webpack_require__(556);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -55537,7 +55575,7 @@
 	})((0, _reactRedux.connect)(mapStateToProps, { putLink: _actions.putLink, fetchLinks: _actions.fetchLinks, fetchContext: _actions.fetchContext })(LinksNew));
 
 /***/ }),
-/* 557 */
+/* 556 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -55574,7 +55612,7 @@
 	};
 
 /***/ }),
-/* 558 */
+/* 557 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55599,7 +55637,7 @@
 
 	var _reactRouterDom = __webpack_require__(216);
 
-	var _messages = __webpack_require__(557);
+	var _messages = __webpack_require__(556);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
