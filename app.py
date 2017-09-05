@@ -69,9 +69,13 @@ def return_hostname():
 
 @app.route('/')
 def show_entries():
+    # session['user'] is JSON!!
+    # session['user'] = {'user': {'email': 'foo@gmail.com', ...}}
+    # user_dict = {'user': {'email': 'foo@gmail.com', ...}}
     if isLocal():
-        if 'user' in session:
-            print('user {0} is already logged in'.format(session['user']))
+        user_dict = json.loads(session.get('user', '{}'))
+        if 'user' in user_dict:
+            print('user {0} is already logged in'.format(user_dict['user']))
             return render_template('index.html')
         else:
             return redirect(API_URL + '/login')
@@ -81,7 +85,8 @@ def show_entries():
 
 @app.route(API_URL + '/context', methods=['GET'])
 def context():
-    return session['user']
+    user_dict = json.loads(session.get('user', '{}'))
+    return json.dumps(user_dict)
 
 @app.route(API_URL + '/links', methods=['GET'])
 def links():
@@ -187,7 +192,7 @@ def authorized():
             request.args['error_description']
         )
     session['google_token'] = (resp['access_token'], '')
-    session['user'] = google.get('userinfo').data
+    session['user'] = json.dumps(google.get('userinfo').data)
     #print(jsonify({"data": me.data}))
     return redirect('/')
 
