@@ -69,24 +69,27 @@ def return_hostname():
 
 @app.route('/')
 def show_entries():
-    # session['user'] is JSON!!
-    # session['user'] = {'user': {'email': 'foo@gmail.com', ...}}
-    # user_dict = {'user': {'email': 'foo@gmail.com', ...}}
     if isLocal():
-        user_dict = json.loads(session.get('user', '{}'))
-        if 'user' in user_dict:
-            print('user {0} is already logged in'.format(user_dict['user']))
+        if 'userdata' in session:
+            print('user {0} is already logged in'.format(
+                session['userdata']['email']))
             return render_template('index.html')
         else:
             return redirect(API_URL + '/login')
-    if 'google_token' in session and 'user' in session:
+    if 'google_token' in session and 'userdata' in session:
         return render_template('index.html')
     return redirect(os.environ.get('SERVER_NAME') + API_URL + '/login')
 
 @app.route(API_URL + '/context', methods=['GET'])
 def context():
-    user_dict = json.loads(session.get('user', '{}'))
-    return json.dumps(user_dict)
+    print('SESSION_USER_END')
+    print(session.get('userdata'))
+    print(type(session.get('userdata')))
+    print('SESSION_USER_END')
+    _context = {
+        'userdata': session.get('userdata')
+    }
+    return json.dumps(_context)
 
 @app.route(API_URL + '/links', methods=['GET'])
 def links():
@@ -103,8 +106,7 @@ def delete_link(alias):
     )
     item = ddb_response.get('Item')
     if item:
-        user_dict = json.loads(session['user'])
-        if item['owner'] != user_dict['user']['email']:
+        if item['owner'] != session['userdata']['email']:
             return ('Only link owners can delete their links', 401)
     response = MO_ENTRIES_TABLE.delete_item(
         Key={
@@ -122,15 +124,15 @@ def put_link():
         }
     )
     item = ddb_response.get('Item')
-    user_dict = json.loads(session['user'])
     if item:
-        if item['owner'] != user_dict['user']['email']:
+        if item['owner'] != session['userdata']['email']:
             return ('Only link owners can update their links', 401)
     response = MO_ENTRIES_TABLE.put_item(
         Item={
             'alias': request.json['alias'],
             'url': request.json['url'],
-            'owner': request.json.get('owner') or user_dict['user']['email'],
+            'owner': request.json.get('owner') or session[
+                'userdata']['email'],
             'clicks': 0
         }
     )
@@ -151,12 +153,9 @@ def get_link(alias):
 def login():
     if isLocal():
         if request.method == 'POST':
-            session['user'] = json.dumps({
-                'user': {
-                    'email': request.form['email']
-                }
-            })
-            print(session['user'])
+            session['userdata'] = {
+                'email': request.form['email']
+            }
             return redirect('/')
         return '''
             <form method="post" action="{0}/login">
@@ -173,7 +172,7 @@ def login():
 @app.route(API_URL + '/logout')
 def logout():
     session.pop('google_token', None)
-    session['user'] = None
+    session['userdata'] = None
     session.clear()
     for key in session.keys():
         session.pop(key, None)
@@ -192,7 +191,12 @@ def authorized():
             request.args['error_description']
         )
     session['google_token'] = (resp['access_token'], '')
-    session['user'] = json.dumps(google.get('userinfo').data)
+    print('OAUTH_CALLBACK_SESSION_USER')
+    # google.get('userinfo').data --> {"email": ..., "gender": ...}
+    print(google.get('userinfo').data)
+    print(type(google.get('userinfo').data))
+    print('OAUTH_CALLBACK_SESSION_USER_END')
+    session['userdata'] = google.get('userinfo').data
     #print(jsonify({"data": me.data}))
     return redirect('/')
 

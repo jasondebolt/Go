@@ -55102,12 +55102,6 @@
 	    case _actions.FETCH_CONTEXT:
 	      console.log(action.payload.data);
 	      return action.payload.data;
-	    //const context = {
-	    //  'user': {
-	    //    'email': action.payload.data.user.email
-	    //  }
-	    //}
-	    //return context;
 	    default:
 	      return state;
 	  }
@@ -55228,7 +55222,7 @@
 	            'div',
 	            { className: 'header item right' },
 	            ' Welcome, \xA0 ',
-	            this.props.context.user.email,
+	            this.props.context.userdata.email,
 	            ' '
 	          )
 	        )

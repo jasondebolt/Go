@@ -34,7 +34,7 @@ class Header extends Component {
         </a>
         <Link className="header item" to={NON_API_ROOT + "/api/links"}> Go </Link>
         <a href={NON_API_ROOT + "/api/logout"} className="header item">Logout</a>
-        <div className="header item right"> Welcome, &nbsp; {this.props.context.user.email} </div>
+        <div className="header item right"> Welcome, &nbsp; {this.props.context.userdata.email} </div>
       </div>
     </div>
     )

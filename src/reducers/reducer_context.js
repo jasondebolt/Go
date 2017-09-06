@@ -15,12 +15,6 @@ export default function(state = {}, action) {
     case FETCH_CONTEXT:
       console.log(action.payload.data);
       return action.payload.data;
-      //const context = {
-      //  'user': {
-      //    'email': action.payload.data.user.email
-      //  }
-      //}
-      //return context;
     default:
       return state
   }
