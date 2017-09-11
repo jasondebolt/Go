@@ -18,6 +18,7 @@ $ npm install
 $ export FLASK_APP=app
 $ export FLASK_DEBUG=1
 $ flask run
+$ webpack --watch {run this in a new terminal window)
 ```
 
 ## Development
