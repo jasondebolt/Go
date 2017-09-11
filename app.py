@@ -54,9 +54,8 @@ google = oauth.remote_app(
     authorize_url='https://accounts.google.com/o/oauth2/auth',
 )
 
-DYNAMODB = boto3.resource('dynamodb', region_name='us-west-2')
-MO_ENTRIES_TABLE = DYNAMODB.Table('mo-entries')
-MO_MESSAGES_TABLE = DYNAMODB.Table('mo-messages')
+DYNAMODB = boto3.resource('dynamodb', region_name='us-east-1')
+MO_ENTRIES_TABLE = DYNAMODB.Table('go-entries')
 API_URL = '/api'
 
 RESERVED_PATHS = ['/api', '/static']
@@ -221,6 +220,9 @@ def environ():
 @app.route('/<path:alias>')
 def redirect_url(alias):
     """Redirects to the URL associated with the entry."""
+    print('ALIAS')
+    print(alias)
+    print('ALIAS')
     ddb_response = MO_ENTRIES_TABLE.get_item(
         Key={
             'alias': alias
