@@ -1,9 +1,8 @@
 """Creates DynamoDB tables for the mo app."""
 import boto3
 import botocore
-from faker import Factory
-
-FAKE = Factory.create()
+from faker import Faker
+from random import random
 
 TABLE_SESSION = boto3.Session()
 DB_CLIENT = TABLE_SESSION.client('dynamodb')
@@ -24,7 +23,52 @@ def get_table_configs():
 
     # Attribute schemas
     table_config['go-entries']['attribute_definitions'] = [
-        {'AttributeName' : 'alias', 'AttributeType' : 'S'}]
+        {'AttributeName' : 'alias', 'AttributeType' : 'S'},
+        {'AttributeName' : 'owner', 'AttributeType' : 'S'},
+        {'AttributeName' : 'clicks', 'AttributeType' : 'N'},
+        {'AttributeName' : 'url', 'AttributeType' : 'S'}
+    ]
+
+    table_config['GlobalSecondaryIndexes'] = []
+    table_config['GlobalSecondaryIndexes'].append({
+        'IndexName' : 'OwnerAlias',
+        'KeySchema' : [
+            {'AttributeName' : 'owner', 'KeyType' : 'HASH'},
+            {'AttributeName' : 'alias', 'KeyType' : 'RANGE'},
+        ],
+        'Projection' : {
+            'ProjectionType' : 'INCLUDE',
+            'NonKeyAttributes' : ['url', 'clicks']
+        },
+        'ProvisionedThroughput' : {
+            'ReadCapacityUnits' : 5, 'WriteCapacityUnits' : 5}
+        })
+    table_config['GlobalSecondaryIndexes'].append({
+        'IndexName' : 'ClicksAlias',
+        'KeySchema' : [
+            {'AttributeName' : 'clicks', 'KeyType' : 'HASH'},
+            {'AttributeName' : 'alias', 'KeyType' : 'RANGE'},
+        ],
+        'Projection' : {
+            'ProjectionType' : 'INCLUDE',
+            'NonKeyAttributes' : ['owner', 'url']
+        },
+        'ProvisionedThroughput' : {
+            'ReadCapacityUnits' : 5, 'WriteCapacityUnits' : 5}
+        })
+    table_config['GlobalSecondaryIndexes'].append({
+        'IndexName' : 'UrlAlias',
+        'KeySchema' : [
+            {'AttributeName' : 'url', 'KeyType' : 'HASH'},
+            {'AttributeName' : 'alias', 'KeyType' : 'RANGE'},
+        ],
+        'Projection' : {
+            'ProjectionType' : 'INCLUDE',
+            'NonKeyAttributes' : ['owner', 'clicks']
+        },
+        'ProvisionedThroughput' : {
+            'ReadCapacityUnits' : 5, 'WriteCapacityUnits' : 5}
+        })
 
     return table_config
 
@@ -36,6 +80,7 @@ def create_table(table_name, table_config):
                 table_name]['attribute_definitions'],
             TableName=table_name,
             KeySchema=table_config[table_name]['key_schema'],
+            GlobalSecondaryIndexes=table_config['GlobalSecondaryIndexes'],
             ProvisionedThroughput=table_config[
                 table_name]['ProvisionedThroughput']
         )
@@ -60,25 +105,33 @@ def create_table(table_name, table_config):
         print('You may exit if running in container.')
 
 def populate_tables():
-    mo_entries = {
-        'goog': {
-            'url': 'https://www.google.com',
-            'owner': 'jasondebolt@gmail.com',
-            'clicks': 0
-        },
-        'mosaic': {
-            'url': 'https://www.joinmosaic.com',
-            'owner': 'jasondebolt@gmail.com',
-            'clicks': 0
-        },
-        'tesla': {
-            'url': 'https://www.tesla.com',
-            'owner': 'jasondebolt@gmail.com',
-            'clicks': 0
+    go_entries = {}
+    fake = Faker('en_US')
+    for _ in range(10000):
+        go_entries[fake.word().replace(' ', '')] = {
+            'url': fake.uri(),
+            'owner': fake.email(),
+            'clicks': int(random() * 1000)
         }
-    }
+    #go_entries = {
+    #    'goog': {
+    #        'url': 'https://www.google.com',
+    #        'owner': 'jasondebolt@gmail.com',
+    #        'clicks': 0
+    #    },
+    #    'mosaic': {
+    #        'url': 'https://www.joinmosaic.com',
+    #        'owner': 'jasondebolt@gmail.com',
+    #        'clicks': 0
+    #    },
+    #    'tesla': {
+    #        'url': 'https://www.tesla.com',
+    #        'owner': 'jasondebolt@gmail.com',
+    #        'clicks': 0
+    #    }
+    #}
     with DB_RESOURCE.Table('go-entries').batch_writer() as batch:
-        for alias, data in mo_entries.items():
+        for alias, data in go_entries.items():
             batch.put_item(
                 Item={
                     'alias': alias,

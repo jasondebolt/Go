@@ -27,8 +27,14 @@ def get_parser():
         title='actions', help='Types of zappa commands',
         dest='command')
 
-    parser_create_stack = subparsers.add_parser(
+    parser_update_stack = subparsers.add_parser(
         'update', help='Update a zappa deploy')
+    parser_update_stack.add_argument(
+        '--name', required=True,
+        help='Name of the deployment (dev, prod, etc.)')
+
+    parser_create_stack = subparsers.add_parser(
+        'deploy', help='Create a zappa deploy')
     parser_create_stack.add_argument(
         '--name', required=True,
         help='Name of the deployment (dev, prod, etc.)')
@@ -44,10 +50,20 @@ def update_zappa(args):
     flask_s3.create_all(app)
     os.system('zappa update {0}'.format(args.name))
 
+def deploy_zappa(args):
+    # Upload the static files to S3
+    print('uploading static files to S3...')
+    s3.init_app(app)
+    app.config['FLASKS3_BUCKET_NAME'] = 'zappa-go'
+    flask_s3.create_all(app)
+    os.system('zappa deploy {0}'.format(args.name))
+
 def main():
     namespace = get_parser().parse_args()
     if namespace.command == 'update':
         update_zappa(namespace)
+    if namespace.command == 'deploy':
+        deploy_zappa(namespace)
     else:
         print('Invalid command.')
 

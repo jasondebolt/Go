@@ -69,7 +69,7 @@ def return_hostname():
 @app.route('/')
 def show_entries():
     if isLocal():
-        if 'userdata' in session:
+        if 'userdata' in session and 'email' in session['userdata']:
             print('user {0} is already logged in'.format(
                 session['userdata']['email']))
             return render_template('index.html')
