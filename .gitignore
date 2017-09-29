@@ -10,6 +10,8 @@ C extensions
 # Go
 go_config.json
 
+*.zip
+
 # Distribution / packaging
 .Python
 env/

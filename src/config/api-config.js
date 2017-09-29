@@ -8,11 +8,11 @@ console.log('HOSTNAME IS' + hostname);
 if(hostname === 'www.jase.cc') {
   backendHost = 'https://api.jase.cc';
   relativePath = '';
-} else if(hostname === 'www.staging.jase.cc') {
-  backendHost = 'https://staging.api.jase.cc';
-  relativePath = '';
 } else if(hostname === 'www.veganolia.com') {
   backendHost = 'https://www.veganolia.com'
+  relativePath = '';
+} else if(hostname === 'go.lambda.solarmosaic.com') {
+  backendHost = 'https://go.lambda.solarmosaic.com'
   relativePath = '';
 } else if(/^qa/.test(hostname)) {
   backendHost = `https://api.${hostname}`;

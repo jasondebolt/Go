@@ -25,7 +25,7 @@ if not isLocal():
     # Use S3 bucket instead for static assets.
     s3 = FlaskS3()
     s3.init_app(app)
-    app.config['FLASKS3_BUCKET_NAME'] = 'zappa-go'
+    app.config['FLASKS3_BUCKET_NAME'] = 'zappa-go-app'
 
 # pylint: disable=C0103,E1101
 secrets_dict = helpers.parse_json_config(
@@ -90,10 +90,34 @@ def context():
     }
     return json.dumps(_context)
 
+def printDynamoDBResponse(response):
+    print('Count: {0}'.format(response.get('Count')))
+    print('ScannedCount: {0}'.format(response.get('ScannedCount')))
+    print('ConsumedCapacity:')
+    print(json.dumps(response.get('ConsumedCapacity')))
+
 @app.route(API_URL + '/links', methods=['GET'])
 def links():
-    response = MO_ENTRIES_TABLE.scan()
+    #response = MO_ENTRIES_TABLE.scan()
+    #items = response.get('Items')
+    #return json.dumps(items, use_decimal=True)
+    response = MO_ENTRIES_TABLE.scan(
+        ReturnConsumedCapacity='TOTAL'
+    )
     items = response.get('Items')
+    last_evaluated_key = response.get('LastEvaluatedKey')
+    counter = 0
+    printDynamoDBResponse(response)
+    while last_evaluated_key:
+        print('Loop {0}'.format(counter))
+        response = MO_ENTRIES_TABLE.scan(
+            ExclusiveStartKey=last_evaluated_key,
+            ReturnConsumedCapacity='TOTAL'
+        )
+        items.append(response.get('Items'))
+        last_evaluated_key = response.get('LastEvaluatedKey')
+        printDynamoDBResponse(response)
+        counter += 1
     return json.dumps(items, use_decimal=True)
 
 @app.route(API_URL + '/links/<alias>', methods=['DELETE'])

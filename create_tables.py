@@ -2,7 +2,8 @@
 import boto3
 import botocore
 from faker import Faker
-from random import random
+import random
+import string
 
 TABLE_SESSION = boto3.Session()
 DB_CLIENT = TABLE_SESSION.client('dynamodb')
@@ -104,32 +105,36 @@ def create_table(table_name, table_config):
     finally:
         print('You may exit if running in container.')
 
+def getRandomAlias(length):
+    return ''.join(random.choices(
+        string.ascii_uppercase + string.digits, k=length))
+
 def populate_tables():
     go_entries = {}
     fake = Faker('en_US')
-    for _ in range(10000):
-        go_entries[fake.word().replace(' ', '')] = {
-            'url': fake.uri(),
-            'owner': fake.email(),
-            'clicks': int(random() * 1000)
-        }
-    #go_entries = {
-    #    'goog': {
-    #        'url': 'https://www.google.com',
-    #        'owner': 'jasondebolt@gmail.com',
-    #        'clicks': 0
-    #    },
-    #    'mosaic': {
-    #        'url': 'https://www.joinmosaic.com',
-    #        'owner': 'jasondebolt@gmail.com',
-    #        'clicks': 0
-    #    },
-    #    'tesla': {
-    #        'url': 'https://www.tesla.com',
-    #        'owner': 'jasondebolt@gmail.com',
-    #        'clicks': 0
+    #for _ in range(10000):
+    #    go_entries[getRandomAlias(10)] = {
+    #        'url': fake.uri(),
+    #        'owner': fake.email(),
+    #        'clicks': int(random.random() * 1000)
     #    }
-    #}
+    go_entries = {
+        'goog': {
+            'url': 'https://www.google.com',
+            'owner': 'jason.debolt@joinmosaic.com',
+            'clicks': 0
+        },
+        'mosaic': {
+            'url': 'https://www.joinmosaic.com',
+            'owner': 'jason.debolt@joinmosaic.com',
+            'clicks': 0
+        },
+        'tesla': {
+            'url': 'https://www.tesla.com',
+            'owner': 'jason.debolt@joinmosaic.com',
+            'clicks': 0
+        }
+    }
     with DB_RESOURCE.Table('go-entries').batch_writer() as batch:
         for alias, data in go_entries.items():
             batch.put_item(

@@ -3,9 +3,9 @@
         "app_function": "app.app",
         "aws_region": "us-east-1",
         "profile_name": "default",
-        "s3_bucket": "zappa-go",
+        "s3_bucket": "zappa-go-app",
         "environment_variables": {
-          "SERVER_NAME": "https://g.o"
+          "SERVER_NAME": "https://go.lambda.solarmosaic.com"
         }
     }
 }

@@ -46,7 +46,7 @@ def update_zappa(args):
     # Upload the static files to S3
     print('uploading static files to S3...')
     s3.init_app(app)
-    app.config['FLASKS3_BUCKET_NAME'] = 'zappa-go'
+    app.config['FLASKS3_BUCKET_NAME'] = 'zappa-go-app'
     flask_s3.create_all(app)
     os.system('zappa update {0}'.format(args.name))
 
@@ -54,7 +54,7 @@ def deploy_zappa(args):
     # Upload the static files to S3
     print('uploading static files to S3...')
     s3.init_app(app)
-    app.config['FLASKS3_BUCKET_NAME'] = 'zappa-go'
+    app.config['FLASKS3_BUCKET_NAME'] = 'zappa-go-app'
     flask_s3.create_all(app)
     os.system('zappa deploy {0}'.format(args.name))
 
