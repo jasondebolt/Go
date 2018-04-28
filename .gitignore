@@ -114,5 +114,6 @@ mo.iml
 # REACT SPECIFIC ======================
 /node_modules
 #bundle.js
+static/bundle.js
 npm-debug.log
 .DS_Store

@@ -9,7 +9,7 @@ $ pip install -r requirements.txt
 
 ## Setting up React
 ```
-$ npm install -g webpack
+$ npm install --dev webpack@1.12.12
 $ npm install
 ```
 
